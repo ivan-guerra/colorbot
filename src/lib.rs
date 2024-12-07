@@ -1,5 +1,6 @@
 use kurbo::{CubicBez, ParamCurve, Point};
 use rand::Rng;
+use scrap::{Capturer, Display};
 use std::io::Write;
 
 pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
@@ -53,4 +54,39 @@ pub fn run_xdotool_script(
     let mut cmd = std::process::Command::new("sh");
     cmd.arg(path);
     cmd.status()
+}
+
+pub fn get_pixels_with_target_color(
+    target_color: &(u8, u8, u8, u8),
+) -> Result<Vec<Point>, Box<dyn std::error::Error>> {
+    // Get the primary display
+    let display = Display::primary()?;
+    let width = display.width();
+    let mut capturer = Capturer::new(display)?;
+    let mut matches = Vec::new();
+
+    loop {
+        // Try to capture a frame
+        if let Ok(frame) = capturer.frame() {
+            // Iterate over the pixels
+            for (i, pixel) in frame.chunks(4).enumerate() {
+                // Pixels are in BGRA format
+                let b = pixel[0];
+                let g = pixel[1];
+                let r = pixel[2];
+                let a = pixel[3];
+
+                if (b, g, r, a) == *target_color {
+                    // Calculate pixel coordinates
+                    let x = i % width;
+                    let y = i / width;
+                    matches.push(Point::new(x as f64, y as f64));
+                }
+            }
+
+            break; // Exit after one frame
+        }
+    }
+
+    Ok(matches)
 }
