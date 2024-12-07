@@ -4,6 +4,32 @@ use scrap::{Capturer, Display};
 use serde::Deserialize;
 use std::io::Write;
 
+pub struct BotConfig {
+    pub script: std::path::PathBuf,
+    pub runtime: u32,
+    pub mouse_deviation: u32,
+    pub mouse_speed: u32,
+    pub debug: bool,
+}
+
+impl BotConfig {
+    pub fn new(
+        script: std::path::PathBuf,
+        runtime: u32,
+        mouse_deviation: u32,
+        mouse_speed: u32,
+        debug: bool,
+    ) -> Self {
+        Self {
+            script,
+            runtime,
+            mouse_deviation,
+            mouse_speed,
+            debug,
+        }
+    }
+}
+
 #[derive(Deserialize, Debug, Clone)]
 pub struct MouseEvent {
     pub id: String,
