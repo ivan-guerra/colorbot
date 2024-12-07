@@ -1,0 +1,8 @@
+[package]
+name = "colorbot"
+version = "0.1.0"
+edition = "2021"
+description = "A OSRS color bot"
+license = "Unlicense"
+
+[dependencies]
