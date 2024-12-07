@@ -1,7 +1,20 @@
 use kurbo::{CubicBez, ParamCurve, Point};
 use rand::Rng;
 use scrap::{Capturer, Display};
+use serde::Deserialize;
 use std::io::Write;
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct MouseEvent {
+    pub id: String,
+    pub color: [u8; 3],
+    pub delay_rng: [u32; 2],
+}
+
+#[derive(Deserialize, Debug)]
+struct BotScript {
+    events: Vec<MouseEvent>,
+}
 
 pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
     let get_ctrl_point = |init_pos: f64, fin_pos: f64| {
@@ -89,4 +102,14 @@ pub fn get_pixels_with_target_color(
     }
 
     Ok(matches)
+}
+
+pub fn read_bot_script(
+    path: &std::path::Path,
+) -> Result<Vec<MouseEvent>, Box<dyn std::error::Error>> {
+    let file = std::fs::File::open(path)?;
+    let reader = std::io::BufReader::new(file);
+    let script: BotScript = serde_json::from_reader(reader)?;
+
+    Ok(script.events.clone())
 }
