@@ -6,3 +6,5 @@ description = "A OSRS color bot"
 license = "Unlicense"
 
 [dependencies]
+rand = "0.8.5"
+kurbo = "0.11.1"
