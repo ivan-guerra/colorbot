@@ -1,3 +1,10 @@
+//! A color-based automation bot that simulates mouse movements and clicks
+//!
+//! This module provides functionality to:
+//! - Read and execute bot scripts defined in JSON format
+//! - Detect pixels of specific colors on the screen
+//! - Generate natural-looking mouse movements using Bézier curves
+//! - Simulate mouse clicks using xdotool on Linux systems
 use device_query::{DeviceQuery, DeviceState};
 use kurbo::{CubicBez, ParamCurve, Point};
 use log::{debug, warn};
@@ -6,11 +13,17 @@ use scrap::{Capturer, Display};
 use serde::Deserialize;
 use std::io::Write;
 
+/// Configuration struct for the bot
 pub struct BotConfig {
+    /// Path to the script file to execute
     pub script: std::path::PathBuf,
+    /// Runtime duration in seconds
     pub runtime: u32,
+    /// Maximum deviation for mouse movements in pixels
     pub mouse_deviation: u32,
+    /// Mouse movement speed in pixels per second
     pub mouse_speed: u32,
+    /// Enable debug logging
     pub debug: bool,
 }
 
@@ -32,18 +45,35 @@ impl BotConfig {
     }
 }
 
+/// Represents a mouse event with timing and color information
 #[derive(Deserialize, Debug, Clone)]
 pub struct MouseEvent {
+    /// Unique identifier for the mouse event
     pub id: String,
+    /// RGB color values as an array of 3 bytes
     pub color: [u8; 3],
+    /// Range for random delay timing [min, max] in milliseconds
     pub delay_rng: [u32; 2],
 }
 
+/// Represents a collection of mouse events forming a bot script
 #[derive(Deserialize, Debug)]
 struct BotScript {
+    /// Vector of mouse events to be executed in sequence
     events: Vec<MouseEvent>,
 }
 
+/// Generates a cubic Bézier curve to simulate natural mouse movement between two points
+///
+/// # Arguments
+///
+/// * `init_pos` - The starting point of the mouse movement
+/// * `fin_pos` - The ending point of the mouse movement
+/// * `deviation` - The maximum percentage of deviation from a straight line (0-100)
+///
+/// # Returns
+///
+/// A `CubicBez` curve representing the mouse movement path
 pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
     let get_ctrl_point = |init_pos: f64, fin_pos: f64| {
         let mut rng = rand::thread_rng();
@@ -66,6 +96,17 @@ pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
     CubicBez::new(init_pos, control_1, control_2, fin_pos)
 }
 
+/// Writes a shell script containing xdotool commands to simulate mouse movement and clicks
+///
+/// # Arguments
+///
+/// * `path` - Path where the script file will be created
+/// * `curve` - A cubic Bézier curve defining the mouse movement path
+/// * `speed` - Speed of mouse movement, smaller values indicate higher speeds.
+///
+/// # Returns
+///
+/// * `std::io::Result<()>` - Success or failure of the file write operation
 pub fn write_xdotool_script(
     path: &std::path::Path,
     curve: CubicBez,
@@ -91,6 +132,15 @@ pub fn write_xdotool_script(
     Ok(())
 }
 
+/// Executes a shell script containing xdotool commands
+///
+/// # Arguments
+///
+/// * `path` - Path to the shell script to execute
+///
+/// # Returns
+///
+/// * `Result<std::process::ExitStatus, std::io::Error>` - Exit status of the script execution or an error
 pub fn run_xdotool_script(
     path: &std::path::Path,
 ) -> Result<std::process::ExitStatus, std::io::Error> {
@@ -99,6 +149,17 @@ pub fn run_xdotool_script(
     cmd.status()
 }
 
+/// Compares two RGBA color values within a specified tolerance
+///
+/// # Arguments
+///
+/// * `a` - First RGBA color tuple (r, g, b, a)
+/// * `b` - Second RGBA color tuple (r, g, b, a)
+/// * `tolerance` - Maximum allowed difference for each color component
+///
+/// # Returns
+///
+/// `true` if all color components are within the specified tolerance, `false` otherwise
 fn color_matches(a: (u8, u8, u8, u8), b: (u8, u8, u8, u8), tolerance: u8) -> bool {
     (a.0 as i16 - b.0 as i16).abs() <= tolerance as i16
         && (a.1 as i16 - b.1 as i16).abs() <= tolerance as i16
@@ -106,6 +167,16 @@ fn color_matches(a: (u8, u8, u8, u8), b: (u8, u8, u8, u8), tolerance: u8) -> boo
         && (a.3 as i16 - b.3 as i16).abs() <= tolerance as i16
 }
 
+/// Captures the screen and finds all pixels matching a target color within a tolerance
+///
+/// # Arguments
+///
+/// * `target_color` - Target RGBA color tuple to search for
+///
+/// # Returns
+///
+/// * `Result<Vec<Point>, Box<dyn std::error::Error>>` - Vector of points where matching pixels were found,
+///   or an error if screen capture fails
 pub fn get_pixels_with_target_color(
     target_color: &(u8, u8, u8, u8),
 ) -> Result<Vec<Point>, Box<dyn std::error::Error>> {
@@ -142,6 +213,16 @@ pub fn get_pixels_with_target_color(
     Ok(matches)
 }
 
+/// Reads and parses a bot script file containing mouse events
+///
+/// # Arguments
+///
+/// * `path` - Path to the JSON script file containing mouse events
+///
+/// # Returns
+///
+/// * `Result<Vec<MouseEvent>, Box<dyn std::error::Error>>` - Vector of parsed mouse events,
+///   or an error if the file cannot be read or parsed
 pub fn read_bot_script(
     path: &std::path::Path,
 ) -> Result<Vec<MouseEvent>, Box<dyn std::error::Error>> {
@@ -152,6 +233,11 @@ pub fn read_bot_script(
     Ok(script.events.clone())
 }
 
+/// Gets the current mouse cursor position on the screen
+///
+/// # Returns
+///
+/// A `Point` struct containing the x and y coordinates of the mouse cursor
 fn get_mouse_position() -> Point {
     let device_state = DeviceState::new();
     let mouse_state = device_state.get_mouse();
@@ -159,6 +245,16 @@ fn get_mouse_position() -> Point {
     Point::new(mouse_state.coords.0 as f64, mouse_state.coords.1 as f64)
 }
 
+/// Executes a single mouse event according to the specified configuration
+///
+/// # Arguments
+///
+/// * `event` - The mouse event to execute, containing color and timing information
+/// * `config` - Configuration settings for the bot behavior
+///
+/// # Returns
+///
+/// * `Result<(), Box<dyn std::error::Error>>` - Success or an error if the event execution fails
 fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
     debug!("executing event: {:?}", event.id);
     let matches =
@@ -187,6 +283,15 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
     Ok(())
 }
 
+/// Runs the main event loop of the bot for a specified duration
+///
+/// # Arguments
+///
+/// * `config` - Configuration settings for the bot behavior, including script path and runtime
+///
+/// # Returns
+///
+/// * `Result<(), Box<dyn std::error::Error>>` - Success or an error if the event loop execution fails
 pub fn run_event_loop(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
     let events = read_bot_script(&config.script)?;
     let start_time = std::time::Instant::now();
