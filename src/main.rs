@@ -58,4 +58,9 @@ fn main() {
             std::process::exit(1);
         }
     }
+
+    if let Err(e) = colorbot::run_event_loop(&config) {
+        eprintln!("error: {}", e);
+        std::process::exit(1);
+    }
 }
