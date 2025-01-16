@@ -126,7 +126,7 @@ pub fn write_xdotool_script(
     }
 
     // The call to sleep guarantees the mouse makes it to its final position before the click
-    file.write_all(b"sleep 0.25\n")?;
+    file.write_all(b"sleep 0.5\n")?;
     file.write_all(b"xdotool click 1\n")?;
 
     Ok(())
@@ -185,7 +185,7 @@ pub fn get_pixels_with_target_color(
     let width = display.width();
     let mut capturer = Capturer::new(display)?;
     let mut matches = Vec::new();
-    const TOLERANCE: u8 = 10;
+    const TOLERANCE: u8 = 5;
 
     loop {
         // Try to capture a frame
@@ -245,6 +245,48 @@ fn get_mouse_position() -> Point {
     Point::new(mouse_state.coords.0 as f64, mouse_state.coords.1 as f64)
 }
 
+fn calculate_centroid(boundary_points: &[Point]) -> Point {
+    // Clone and work on the points
+    let mut points = boundary_points.to_vec();
+
+    // Step 1: Find the geometric center
+    let center_x = points.iter().map(|p| p.x).sum::<f64>() / points.len() as f64;
+    let center_y = points.iter().map(|p| p.y).sum::<f64>() / points.len() as f64;
+    let center = Point::new(center_x, center_y);
+
+    // Step 2: Sort points counterclockwise around the center
+    points.sort_by(|p1, p2| {
+        let angle1 = (p1.y - center.y).atan2(p1.x - center.x);
+        let angle2 = (p2.y - center.y).atan2(p2.x - center.x);
+        angle1.partial_cmp(&angle2).unwrap()
+    });
+
+    // Step 3: Ensure the shape is closed
+    if points.first() != points.last() {
+        points.push(points[0]);
+    }
+
+    // Step 4: Calculate the centroid using the Shoelace formula
+    let mut area = 0.0;
+    let mut cx = 0.0;
+    let mut cy = 0.0;
+
+    for i in 0..points.len() - 1 {
+        let p1 = points[i];
+        let p2 = points[i + 1];
+        let cross = p1.x * p2.y - p2.x * p1.y;
+        area += cross;
+        cx += (p1.x + p2.x) * cross;
+        cy += (p1.y + p2.y) * cross;
+    }
+
+    area *= 0.5;
+    cx /= 6.0 * area;
+    cy /= 6.0 * area;
+
+    Point::new(cx, cy)
+}
+
 /// Executes a single mouse event according to the specified configuration
 ///
 /// # Arguments
@@ -265,7 +307,12 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
         let mut rng = rand::thread_rng();
         let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
         let init_pos = get_mouse_position();
-        let fin_pos = matches[rng.gen_range(0..matches.len())];
+
+        let mut fin_pos = matches[rng.gen_range(0..matches.len())];
+        if event.id.contains("rope") || event.id.contains("net") {
+            fin_pos = calculate_centroid(&matches);
+        }
+
         let curve = mouse_bez(init_pos, fin_pos, config.mouse_deviation);
         let script_path = std::path::Path::new("/tmp/colorbot.sh");
 
