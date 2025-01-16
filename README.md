@@ -63,6 +63,8 @@ events. Each mouse event has three fields:
 
 Checkout the [scripts/](scripts/) directory for example scripts. Note, this
 utility is meant to be used in conjunction with the RuneLite plugins Inventory
-Tags and NPC Indicators.
+Tags, NPC Indicators, Object Markers, and Menu Entry Swapper. Checkout this
+[blog post][2] for more information.
 
 [1]: https://www.semicomplete.com/projects/xdotool/
+[2]: https://programmador.com/posts/2025/colorbot/
