@@ -330,6 +330,35 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
     Ok(())
 }
 
+fn has_other_players() -> Result<bool, Box<dyn std::error::Error>> {
+    let green = (0, 255, 0, 0);
+    let matches = get_pixels_with_target_color(&green)?;
+
+    Ok(!matches.is_empty())
+}
+
+fn hop_world() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/hop_world.sh");
+    let mut file = std::fs::File::create(script_path)?;
+    file.write_all(b"#!/bin/bash\n")?;
+    file.write_all(b"xdotool key ctrl+shift+Right\n")?;
+
+    run_xdotool_script(script_path)?;
+
+    Ok(())
+}
+
+fn press_escape() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/press_escape.sh");
+    let mut file = std::fs::File::create(script_path)?;
+    file.write_all(b"#!/bin/bash\n")?;
+    file.write_all(b"xdotool key Escape\n")?;
+
+    run_xdotool_script(script_path)?;
+
+    Ok(())
+}
+
 /// Runs the main event loop of the bot for a specified duration
 ///
 /// # Arguments
@@ -344,6 +373,15 @@ pub fn run_event_loop(config: &BotConfig) -> Result<(), Box<dyn std::error::Erro
     let start_time = std::time::Instant::now();
     let runtime = std::time::Duration::from_secs(u64::from(config.runtime));
     let end_time = start_time + runtime;
+
+    while has_other_players()? {
+        // TODO: hop worlds
+        hop_world()?;
+        debug!("other players detected, hopping worlds");
+        std::thread::sleep(std::time::Duration::from_secs(10));
+    }
+
+    press_escape()?;
 
     while std::time::Instant::now() < end_time {
         // Execute all events in sequence
