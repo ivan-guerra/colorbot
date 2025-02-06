@@ -185,7 +185,7 @@ pub fn get_pixels_with_target_color(
     let width = display.width();
     let mut capturer = Capturer::new(display)?;
     let mut matches = Vec::new();
-    const TOLERANCE: u8 = 5;
+    const TOLERANCE: u8 = 3;
 
     loop {
         // Try to capture a frame
@@ -299,6 +299,14 @@ fn calculate_centroid(boundary_points: &[Point]) -> Point {
 /// * `Result<(), Box<dyn std::error::Error>>` - Success or an error if the event execution fails
 fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
     debug!("executing event: {:?}", event.id);
+
+    if event.id.contains("hop") {
+        hop_world()?;
+        std::thread::sleep(std::time::Duration::from_millis(9500));
+        press_escape()?;
+        return Ok(());
+    }
+
     let matches =
         get_pixels_with_target_color(&(event.color[2], event.color[1], event.color[0], 0))?;
     if matches.is_empty() {
@@ -309,7 +317,7 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
         let init_pos = get_mouse_position();
 
         let mut fin_pos = matches[rng.gen_range(0..matches.len())];
-        if event.id.contains("rope") || event.id.contains("net") {
+        if event.id.contains("chest") {
             fin_pos = calculate_centroid(&matches);
         }
 
@@ -373,15 +381,6 @@ pub fn run_event_loop(config: &BotConfig) -> Result<(), Box<dyn std::error::Erro
     let start_time = std::time::Instant::now();
     let runtime = std::time::Duration::from_secs(u64::from(config.runtime));
     let end_time = start_time + runtime;
-
-    while has_other_players()? {
-        // TODO: hop worlds
-        hop_world()?;
-        debug!("other players detected, hopping worlds");
-        std::thread::sleep(std::time::Duration::from_secs(10));
-    }
-
-    press_escape()?;
 
     while std::time::Instant::now() < end_time {
         // Execute all events in sequence

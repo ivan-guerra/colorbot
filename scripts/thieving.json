@@ -1,0 +1,34 @@
+{
+  "events": [
+    {
+      "id": "open chest",
+      "color": [0, 0, 255],
+      "delay_rng": [6000, 6250]
+    },
+    {
+      "id": "open chest",
+      "color": [0, 255, 0],
+      "delay_rng": [8000, 8150]
+    },
+    {
+      "id": "drop item",
+      "color": [255, 0, 255],
+      "delay_rng": [250, 300]
+    },
+    {
+      "id": "drop item",
+      "color": [255, 0, 255],
+      "delay_rng": [250, 300]
+    },
+    {
+      "id": "drop item",
+      "color": [255, 0, 255],
+      "delay_rng": [250, 300]
+    },
+    {
+      "id": "hop",
+      "color": [0, 0, 0],
+      "delay_rng": [9500, 9750]
+    }
+  ]
+}
