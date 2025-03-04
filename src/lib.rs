@@ -300,10 +300,8 @@ fn calculate_centroid(boundary_points: &[Point]) -> Point {
 fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
     debug!("executing event: {:?}", event.id);
 
-    if event.id.contains("hop") {
-        hop_world()?;
-        std::thread::sleep(std::time::Duration::from_millis(9500));
-        press_escape()?;
+    if event.id.contains("drop") {
+        drop_inventory()?;
         return Ok(());
     }
 
@@ -315,11 +313,7 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
         let mut rng = rand::thread_rng();
         let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
         let init_pos = get_mouse_position();
-
-        let mut fin_pos = matches[rng.gen_range(0..matches.len())];
-        if event.id.contains("chest") {
-            fin_pos = calculate_centroid(&matches);
-        }
+        let fin_pos = matches[rng.gen_range(0..matches.len())];
 
         let curve = mouse_bez(init_pos, fin_pos, config.mouse_deviation);
         let script_path = std::path::Path::new("/tmp/colorbot.sh");
@@ -339,8 +333,8 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
 }
 
 fn has_other_players() -> Result<bool, Box<dyn std::error::Error>> {
-    let green = (0, 255, 0, 0);
-    let matches = get_pixels_with_target_color(&green)?;
+    let color = (255, 255, 0, 0);
+    let matches = get_pixels_with_target_color(&color)?;
 
     Ok(!matches.is_empty())
 }
@@ -367,6 +361,64 @@ fn press_escape() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+fn press_one() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/press_one.sh");
+    let mut file = std::fs::File::create(script_path)?;
+    file.write_all(b"#!/bin/bash\n")?;
+    file.write_all(b"xdotool key 1\n")?;
+
+    run_xdotool_script(script_path)?;
+
+    Ok(())
+}
+
+fn press_two() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/press_two.sh");
+    let mut file = std::fs::File::create(script_path)?;
+    file.write_all(b"#!/bin/bash\n")?;
+    file.write_all(b"xdotool key 2\n")?;
+
+    run_xdotool_script(script_path)?;
+
+    Ok(())
+}
+
+fn drop_inventory() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/drop_inventory.sh");
+    let mut file = std::fs::File::create(script_path)?;
+    file.write_all(b"#!/bin/bash\n")?;
+
+    let origin = Point::new(741.0, 753.0);
+    let mut inventory_slots = vec![];
+    for i in 0..4 {
+        for j in 0..7 {
+            // add +/- 2 pixels to each x and y randomly
+            let x = origin.x + i as f64 * 45.0 + rand::thread_rng().gen_range(-2..=2) as f64;
+            let y = origin.y + j as f64 * 35.0 + rand::thread_rng().gen_range(-2..=2) as f64;
+            inventory_slots.push(Point::new(x, y));
+        }
+    }
+
+    let mut init_pos = get_mouse_position();
+    for p in inventory_slots {
+        let curve = mouse_bez(init_pos, p, 30);
+        (0..=50)
+            .map(|t| t as f64 / 50.0)
+            .map(|t| curve.eval(t))
+            .for_each(|point| {
+                file.write_all(format!("xdotool mousemove {} {}\n", point.x, point.y).as_bytes())
+                    .unwrap();
+            });
+        file.write_all(b"xdotool click 1\n")?;
+
+        init_pos = p;
+    }
+
+    run_xdotool_script(script_path)?;
+
+    Ok(())
+}
+
 /// Runs the main event loop of the bot for a specified duration
 ///
 /// # Arguments
@@ -381,6 +433,12 @@ pub fn run_event_loop(config: &BotConfig) -> Result<(), Box<dyn std::error::Erro
     let start_time = std::time::Instant::now();
     let runtime = std::time::Duration::from_secs(u64::from(config.runtime));
     let end_time = start_time + runtime;
+
+    while has_other_players()? {
+        hop_world()?;
+        std::thread::sleep(std::time::Duration::from_secs(5));
+        press_escape()?;
+    }
 
     while std::time::Instant::now() < end_time {
         // Execute all events in sequence
