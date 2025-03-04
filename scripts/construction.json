@@ -1,0 +1,79 @@
+{
+  "events": [
+    {
+      "id": "build larder",
+      "color": [0, 255, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "two",
+      "color": [0, 255, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "remove larder",
+      "color": [255, 0, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "one",
+      "color": [255, 0, 255],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "build larder",
+      "color": [0, 255, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "two",
+      "color": [0, 255, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "remove larder",
+      "color": [255, 0, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "one",
+      "color": [255, 0, 255],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "build larder",
+      "color": [0, 255, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "two",
+      "color": [0, 255, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "demon",
+      "color": [0, 0, 255],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "one",
+      "color": [255, 0, 255],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "remove larder",
+      "color": [255, 0, 0],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "one",
+      "color": [255, 0, 255],
+      "delay_rng": [1100, 1150]
+    },
+    {
+      "id": "pause",
+      "color": [0, 0, 0],
+      "delay_rng": [0, 0]
+    }
+  ]
+}
