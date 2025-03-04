@@ -1,0 +1,149 @@
+{
+  "events": [
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [52, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [31, 16, 32],
+      "delay_rng": [850, 855]
+    },
+    {
+      "id": "mine",
+      "color": [43, 44, 14],
+      "delay_rng": [1000, 1005]
+    },
+    {
+      "id": "drop",
+      "color": [0, 0, 0],
+      "delay_rng": [0, 0]
+    }
+  ]
+}
