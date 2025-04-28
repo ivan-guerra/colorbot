@@ -69,7 +69,7 @@ mouse events. The event script must have the following format:
 ```
 
 The event script contains a top-level `events` array with one or more mouse
-events. Each mouse event has four fields:
+events.
 
 - `type`: The type of event to execute, you choose between `keypress` or `mouse`
 - `action`: The type of click or keypress you want. 
