@@ -82,8 +82,8 @@ events.
   milliseconds the script will insert after the click is performed.
 - `count`: The number of repetitions you want, by default is `1` and can be ommited in the json.
 
-Checkout the [scripts/](scripts/) directory for example scripts. Note, this
-utility is meant to be used in conjunction with the RuneLite plugins like:<br> 
+Checkout the [scripts/](scripts/) directory for example scripts.<br>
+Note, this utility is meant to be used in conjunction with the RuneLite plugins like:<br> 
 - Inventory Tags
 - Bank Highlighter
 - NPC Indicators
