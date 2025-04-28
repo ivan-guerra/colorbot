@@ -1,6 +1,6 @@
 use device_query::{DeviceQuery, DeviceState};
 use kurbo::{CubicBez, ParamCurve, Point};
-use log::{debug};
+use log::debug;
 use rand::Rng;
 use scrap::{Capturer, Display};
 use serde::Deserialize;
@@ -41,13 +41,15 @@ pub enum BotEvent {
         action: String,
         color: [u8; 3],
         delay_rng: [u32; 2],
+        #[serde(default = "default_count")]
         count: u32,
     },
     #[serde(rename = "keypress")]
     KeyPress {
         id: String,
-        key: String,
+        action: String,  // Changed from 'key' to 'action'
         delay_rng: [u32; 2],
+        #[serde(default = "default_count")]
         count: u32,
     },
 }
@@ -55,6 +57,10 @@ pub enum BotEvent {
 #[derive(Deserialize, Debug)]
 struct BotScript {
     events: Vec<BotEvent>,
+}
+
+fn default_count() -> u32 {
+    1
 }
 
 pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
@@ -96,9 +102,6 @@ pub fn write_xdotool_script(
     for point in points {
         file.write_all(point.as_bytes())?;
     }
-
-    file.write_all(b"sleep 0.5\n")?;
-    file.write_all(b"xdotool click 1\n")?;
 
     Ok(())
 }
@@ -169,13 +172,18 @@ fn handle_click(
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/left_click.sh");
             write_xdotool_script(path, curve, config.mouse_speed)?;
+            // Append left click
+            let mut file = std::fs::OpenOptions::new()
+                .append(true)
+                .open(path)?;
+            file.write_all(b"xdotool click 1\n")?;
             path
         },
         "right_click" => {
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/right_click.sh");
             write_xdotool_script(path, curve, config.mouse_speed)?;
-            // Append right click command
+            // Append right click
             let mut file = std::fs::OpenOptions::new()
                 .append(true)
                 .open(path)?;
@@ -185,17 +193,13 @@ fn handle_click(
         "shift_click" => {
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/shift_click.sh");
-            // Write shift down first
-            let mut file = std::fs::File::create(path)?;
-            file.write_all(b"xdotool keydown shift\n")?;
-            file.flush()?;
-            // Then write the mouse movement
+            // Write curve movement
             write_xdotool_script(path, curve, config.mouse_speed)?;
-            // Then append the click and shift up
+            // Append atomic shift+click
             let mut file = std::fs::OpenOptions::new()
                 .append(true)
                 .open(path)?;
-            file.write_all(b"xdotool click 1\nxdotool keyup shift\n")?;
+            file.write_all(b"xdotool keydown Shift sleep 0.05 click 1 keyup Shift\n")?;
             path
         },
         _ => return Err("Unsupported action".into()),
@@ -205,11 +209,11 @@ fn handle_click(
     Ok(())
 }
 
-fn press_key(key: &str) -> Result<(), Box<dyn std::error::Error>> {
+fn press_key(action: &str) -> Result<(), Box<dyn std::error::Error>> {
     let script_path = std::path::Path::new("/tmp/press_key.sh");
     let mut file = std::fs::File::create(script_path)?;
     file.write_all(b"#!/bin/bash\n")?;
-    file.write_all(format!("xdotool key {}\n", key).as_bytes())?;
+    file.write_all(format!("xdotool key {}\n", action).as_bytes())?;
     run_xdotool_script(script_path)?;
     Ok(())
 }
@@ -224,23 +228,27 @@ fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std
     match event {
         BotEvent::Mouse { id, action, color, delay_rng, count } => {
             debug!("Executing mouse event: {}", id);
-            let matches = get_pixels_with_target_color(&(color[2], color[1], color[0], 0))?;
-            if !matches.is_empty() {
-                let target = matches[rand::thread_rng().gen_range(0..matches.len())];
-                let mut rng = rand::thread_rng();
-                
-                for _ in 0..*count {
+            let target_color = (color[2], color[1], color[0], 0);
+            let mut rng = rand::thread_rng();
+            
+            for _ in 0..*count {
+                // RE-CHECK COLOR EVERY ITERATION
+                let matches = get_pixels_with_target_color(&target_color)?;
+                if !matches.is_empty() {
+                    let target = matches[rng.gen_range(0..matches.len())];
                     handle_click(action, target, config)?;
                     let delay = rng.gen_range(delay_rng[0]..=delay_rng[1]);
                     std::thread::sleep(std::time::Duration::from_millis(delay.into()));
+                } else {
+                    debug!("No color matches found for {}", id);
                 }
             }
         },
-        BotEvent::KeyPress { id, key, delay_rng, count } => {
+        BotEvent::KeyPress { id, action, delay_rng, count } => {
             debug!("Executing keypress: {}", id);
             let mut rng = rand::thread_rng();
             for _ in 0..*count {
-                press_key(key)?;
+                press_key(action)?;
                 let delay = rng.gen_range(delay_rng[0]..=delay_rng[1]);
                 std::thread::sleep(std::time::Duration::from_millis(delay.into()));
             }
