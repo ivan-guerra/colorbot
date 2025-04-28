@@ -44,22 +44,43 @@ mouse events. The event script must have the following format:
 {
   "events": [
     {
+      "type": "keypress",
+      "action": "F1"
       "id": "event1",
+      "delay_rng": [10, 20]
+    },
+    {
+      "type": "mouse",
+      "action": "left_click"
+      "id": "event2",
       "color": [1, 2, 3],
       "delay_rng": [10, 20]
+    },
+    {
+      "type": "mouse",
+      "action": "shift_click"
+      "id": "event1",
+      "color": [1, 2, 3],
+      "delay_rng": [10, 20],
+      "count": 27
     }
   ]
 }
 ```
 
 The event script contains a top-level `events` array with one or more mouse
-events. Each mouse event has three fields:
+events. Each mouse event has four fields:
 
+- `type`: The type of event to execute, you choose between `keypress` or `mouse`
+- `action`: The type of click or keypress you want. 
+  - Mouse supports `left_click`,`right_click` and `shift_click` (shift left click) 
+  - Keypress supports `F1` to `F12`, `Escape`, and key combinations `Ctrl+Shift+Right` (does not need the color parameter)
 - `id`: A string describing the event.
 - `color`: A three element array containing the RGB color of the pixel to click
-  on.
+  on. (for "type:": "mouse" only)
 - `delay_rng`: A two element array containing the minimum and maximum delay in
   milliseconds the script will insert after the click is performed.
+- `count`: The number of repetitions you want, by default is `1` and can be ommited in the json.
 
 Checkout the [scripts/](scripts/) directory for example scripts. Note, this
 utility is meant to be used in conjunction with the RuneLite plugins Inventory
