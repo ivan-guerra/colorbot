@@ -83,8 +83,15 @@ events.
 - `count`: The number of repetitions you want, by default is `1` and can be ommited in the json.
 
 Checkout the [scripts/](scripts/) directory for example scripts. Note, this
-utility is meant to be used in conjunction with the RuneLite plugins Inventory
-Tags, NPC Indicators, Object Markers, and Menu Entry Swapper. Checkout this
+utility is meant to be used in conjunction with the RuneLite plugins like:<br> 
+- Inventory Tags
+- Bank Highlighter
+- NPC Indicators
+- Object Markers
+- Menu Entry Swapper
+- Canvas or Brush Markers can be helpful
+
+Checkout this
 [blog post][2] for more information.
 
 [1]: https://www.semicomplete.com/projects/xdotool/
