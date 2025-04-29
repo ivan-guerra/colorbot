@@ -98,7 +98,10 @@ Note, this utility is meant to be used in conjunction with the RuneLite plugins 
 - NPC Indicators
 - Object Markers
 - Menu Entry Swapper
-- Canvas or Brush Markers can be helpful
+- Canvas or Brush Markers can also be helpful
+
+It is recommended to enable in the runescape Settings -> Controls -> Enable "Shift click to drop items" and "Esc closes the interface"
+And in runescape Settings -> Warnings -> Confirmations -> Disable "World Switcher confirmation" (to use along the World Hopper Plugin)
 
 Checkout this
 [blog post][2] for more information.
