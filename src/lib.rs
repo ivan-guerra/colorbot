@@ -68,22 +68,29 @@ fn default_count() -> u32 {
 fn default_false() -> bool { false }
 
 pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
-    let get_ctrl_point = |init_pos: f64, fin_pos: f64| {
-        let mut rng = rand::thread_rng();
-        let choice = if rng.gen_bool(0.5) { 1 } else { -1 };
-        let dev = rng.gen_range(deviation / 2..=deviation) as i32;
-        let diff = (fin_pos as i32).saturating_sub(init_pos as i32);
-        let offset = (choice * diff * dev) / 100;
-        (init_pos as i32 + offset).max(0) as f64
-    };
-
+    let mut rng = rand::thread_rng();
+    
+    let dx = fin_pos.x - init_pos.x;
+    let dy = fin_pos.y - init_pos.y;
+    let dist = (dx * dx + dy * dy).sqrt();
+    
+    let max_dev = dist * (deviation as f64 / 50.0);
+    let ctrl1_offset = rng.gen_range(max_dev * 0.5..=max_dev);
+    let ctrl2_offset = rng.gen_range(max_dev * 0.3..=max_dev * 0.8);
+    
+    // Calculate control points with more natural curves
+    let angle = dy.atan2(dx);
+    let ctrl1_angle = angle + rng.gen_range(-0.8..0.8);
+    let ctrl2_angle = angle + rng.gen_range(-0.5..0.5);
+    
     let control_1 = Point::new(
-        get_ctrl_point(init_pos.x, fin_pos.x),
-        get_ctrl_point(init_pos.y, fin_pos.y),
+        init_pos.x + ctrl1_offset * ctrl1_angle.cos(),
+        init_pos.y + ctrl1_offset * ctrl1_angle.sin()
     );
+    
     let control_2 = Point::new(
-        get_ctrl_point(init_pos.x, fin_pos.x),
-        get_ctrl_point(init_pos.y, fin_pos.y),
+        fin_pos.x - ctrl2_offset * ctrl2_angle.cos(),
+        fin_pos.y - ctrl2_offset * ctrl2_angle.sin()
     );
 
     CubicBez::new(init_pos, control_1, control_2, fin_pos)
@@ -125,28 +132,46 @@ fn color_matches(a: (u8, u8, u8, u8), b: (u8, u8, u8, u8), tolerance: u8) -> boo
 
 pub fn get_pixels_with_target_color(
     target_color: &(u8, u8, u8, u8),
-) -> Result<Vec<Point>, Box<dyn std::error::Error>> {
+) -> Result<Vec<(Point, u32)>, Box<dyn std::error::Error>> {
     let display = Display::primary()?;
     let width = display.width();
+    let height = display.height();
     let mut capturer = Capturer::new(display)?;
     let mut matches = Vec::new();
     const TOLERANCE: u8 = 3;
 
-    loop {
-        if let Ok(frame) = capturer.frame() {
-            for (i, pixel) in frame.chunks(4).enumerate() {
-                let b = pixel[0];
-                let g = pixel[1];
-                let r = pixel[2];
-                let a = pixel[3];
+    if let Ok(frame) = capturer.frame() {
+        // Creates a 2D grid to count neighboring matches
+        let mut density_grid = vec![vec![0; height as usize]; width as usize];
+        
+        // Finds all matching pixels and marks them
+        for (i, pixel) in frame.chunks(4).enumerate() {
+            if color_matches((pixel[0], pixel[1], pixel[2], pixel[3]), *target_color, TOLERANCE) {
+                let x = i % width;
+                let y = i / width;
+                density_grid[x][y] = 1;
+            }
+        }
 
-                if color_matches((b, g, r, a), *target_color, TOLERANCE) {
-                    let x = i % width;
-                    let y = i / width;
-                    matches.push(Point::new(x as f64, y as f64));
+        // Calculate density (how many neighbors each pixel has)
+        for x in 1..width-1 {
+            for y in 1..height-1 {
+                if density_grid[x][y] > 0 {
+                    let mut density = 0;
+                    // Check 8 surrounding pixels
+                    for dx in -1..=1 {
+                        for dy in -1..=1 {
+                            if density_grid[(x as i32 + dx) as usize][(y as i32 + dy) as usize] > 0 {
+                                density += 1;
+                            }
+                        }
+                    }
+                    matches.push((
+                        Point::new(x as f64, y as f64),
+                        density
+                    ));
                 }
             }
-            break;
         }
     }
 
@@ -187,7 +212,7 @@ fn handle_click(
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/right_click.sh");
             write_xdotool_script(path, curve, config.mouse_speed)?;
-
+            // Append right click
             let mut file = std::fs::OpenOptions::new()
                 .append(true)
                 .open(path)?;
@@ -197,9 +222,9 @@ fn handle_click(
         "shift_click" => {
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/shift_click.sh");
-
+            // Write curve movement
             write_xdotool_script(path, curve, config.mouse_speed)?;
-
+            // Append atomic shift+click
             let mut file = std::fs::OpenOptions::new()
                 .append(true)
                 .open(path)?;
@@ -236,9 +261,15 @@ fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std
             let mut rng = rand::thread_rng();
             
             'attempt_loop: for _ in 0..*count {
-
+                // Full screen check with density calculation
                 let matches = match get_pixels_with_target_color(&target_color) {
-                    Ok(m) if !m.is_empty() => m,
+                    Ok(m) if !m.is_empty() => {
+                        // Sort by density (highest first) and take top 25%
+                        let mut sorted = m.clone();
+                        sorted.sort_by(|a, b| b.1.cmp(&a.1));
+                        let top_quarter = (sorted.len() / 4).max(1);
+                        sorted[..top_quarter].to_vec()
+                    },
                     _ => {
                         if *skip_if_vanished {
                             debug!("Color not found on screen, skipping {}", id);
@@ -247,35 +278,42 @@ fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std
                             ));
                             continue 'attempt_loop;
                         }
-                        continue;
+                        Vec::new()
                     }
                 };
 
+                if !matches.is_empty() {
+                    // Pick random target from high-density areas
+                    let target = matches[rng.gen_range(0..matches.len())].0;
+                    handle_click(action, target, config)?;
 
-                let target = matches[rng.gen_range(0..matches.len())];
-                handle_click(action, target, config)?;
-
-                // Continuous monitoring
-                let delay_ms = rng.gen_range(delay_rng[0]..=delay_rng[1]) as u64;
-                let check_interval = 100u64;
-                let mut elapsed = 0u64;
-                
-                while elapsed < delay_ms {
-                    if *skip_if_vanished {
-                        match get_pixels_with_target_color(&target_color) {
-                            Ok(m) if m.is_empty() => {
-                                debug!("Color vanished during wait, skipping {}", id);
-                                std::thread::sleep(std::time::Duration::from_millis(
-                                    rng.gen_range(200..1500) as u64
-                                ));
-                                continue 'attempt_loop;
-                            },
-                            Err(e) => debug!("Scan error: {}", e),
-                            _ => {}
+                    // Continuous monitoring
+                    let delay_ms = rng.gen_range(delay_rng[0]..=delay_rng[1]) as u64;
+                    let check_interval = 100u64;
+                    let mut elapsed = 0u64;
+                    
+                    while elapsed < delay_ms {
+                        if *skip_if_vanished {
+                            match get_pixels_with_target_color(&target_color) {
+                                Ok(m) if m.is_empty() => {
+                                    debug!("Color vanished during wait, skipping {}", id);
+                                    std::thread::sleep(std::time::Duration::from_millis(
+                                        rng.gen_range(200..1500) as u64
+                                    ));
+                                    continue 'attempt_loop;
+                                },
+                                Err(e) => debug!("Scan error: {}", e),
+                                _ => {}
+                            }
                         }
+                        std::thread::sleep(std::time::Duration::from_millis(check_interval));
+                        elapsed += check_interval;
                     }
-                    std::thread::sleep(std::time::Duration::from_millis(check_interval));
-                    elapsed += check_interval;
+                } else if !*skip_if_vanished {
+                    // If we're not skipping and found no matches, wait full delay
+                    std::thread::sleep(std::time::Duration::from_millis(
+                        rng.gen_range(delay_rng[0]..=delay_rng[1]) as u64
+                    ));
                 }
             }
         },
