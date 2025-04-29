@@ -232,7 +232,6 @@ fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std
             let mut rng = rand::thread_rng();
             
             for _ in 0..*count {
-                // RE-CHECK COLOR EVERY ITERATION
                 let matches = get_pixels_with_target_color(&target_color)?;
                 if !matches.is_empty() {
                     let target = matches[rng.gen_range(0..matches.len())];
