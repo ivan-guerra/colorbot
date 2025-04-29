@@ -45,28 +45,28 @@ mouse events. The event script must have the following format:
   "events": [
     {
       "type": "keypress",
-      "action": "F1"
+      "action": "F1",
       "id": "event1",
       "delay_rng": [10, 20]
     },
     {
       "type": "mouse",
-      "action": "left_click"
+      "action": "left_click",
       "id": "event2",
       "color": [1, 2, 3],
       "delay_rng": [10, 20]
     },
     {
       "type": "mouse",
-      "action": "left_click"
+      "action": "left_click",
       "id": "event2",
       "color": [1, 2, 3],
-      "delay_rng": [10000, 20000]
+      "delay_rng": [10000, 20000],
       "skip_if_vanished": true
     },
     {
       "type": "mouse",
-      "action": "shift_click"
+      "action": "shift_click",
       "id": "event1",
       "color": [1, 2, 3],
       "delay_rng": [10, 20],
