@@ -77,10 +77,11 @@ events.
   - Keypress supports `F1` to `F12`, `Escape`, and key combinations `Ctrl+Shift+Right` (does not need the color parameter)
 - `id`: A string describing the event.
 - `color`: A three element array containing the RGB color of the pixel to click
-  on. (for "type:": "mouse" only)
+  on. For `mouse` type only.
 - `delay_rng`: A two element array containing the minimum and maximum delay in
   milliseconds the script will insert after the click is performed.
 - `count`: The number of repetitions you want, by default is `1` and can be ommited in the json.
+- `skip_if_vanished`: Only for `mouse` type, can be ommited, by default if `false. If the target color is not present in the screen anymore, it will skip to the next event.
 
 Checkout the [scripts/](scripts/) directory for example scripts.<br>
 Note, this utility is meant to be used in conjunction with the RuneLite plugins like:<br> 
