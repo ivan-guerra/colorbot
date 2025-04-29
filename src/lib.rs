@@ -49,7 +49,7 @@ pub enum BotEvent {
     #[serde(rename = "keypress")]
     KeyPress {
         id: String,
-        action: String,  // Changed from 'key' to 'action'
+        action: String,
         delay_rng: [u32; 2],
         #[serde(default = "default_count")]
         count: u32,
@@ -187,7 +187,7 @@ fn handle_click(
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/right_click.sh");
             write_xdotool_script(path, curve, config.mouse_speed)?;
-            // Append right click
+
             let mut file = std::fs::OpenOptions::new()
                 .append(true)
                 .open(path)?;
@@ -197,9 +197,9 @@ fn handle_click(
         "shift_click" => {
             let curve = mouse_bez(get_mouse_position(), target, config.mouse_deviation);
             let path = std::path::Path::new("/tmp/shift_click.sh");
-            // Write curve movement
+
             write_xdotool_script(path, curve, config.mouse_speed)?;
-            // Append atomic shift+click
+
             let mut file = std::fs::OpenOptions::new()
                 .append(true)
                 .open(path)?;
@@ -236,7 +236,7 @@ fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std
             let mut rng = rand::thread_rng();
             
             'attempt_loop: for _ in 0..*count {
-                // Full screen check
+
                 let matches = match get_pixels_with_target_color(&target_color) {
                     Ok(m) if !m.is_empty() => m,
                     _ => {
@@ -251,13 +251,13 @@ fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std
                     }
                 };
 
-                // Perform action
+
                 let target = matches[rng.gen_range(0..matches.len())];
                 handle_click(action, target, config)?;
 
                 // Continuous monitoring
-                let delay_ms = rng.gen_range(delay_rng[0]..=delay_rng[1]) as u64; // Convert to u64
-                let check_interval = 100u64; // Explicit u64
+                let delay_ms = rng.gen_range(delay_rng[0]..=delay_rng[1]) as u64;
+                let check_interval = 100u64;
                 let mut elapsed = 0u64;
                 
                 while elapsed < delay_ms {
