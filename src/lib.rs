@@ -43,6 +43,8 @@ pub enum BotEvent {
         delay_rng: [u32; 2],
         #[serde(default = "default_count")]
         count: u32,
+        #[serde(default = "default_false")]
+        skip_if_vanished: bool,
     },
     #[serde(rename = "keypress")]
     KeyPress {
@@ -62,6 +64,8 @@ struct BotScript {
 fn default_count() -> u32 {
     1
 }
+
+fn default_false() -> bool { false }
 
 pub fn mouse_bez(init_pos: Point, fin_pos: Point, deviation: u32) -> CubicBez {
     let get_ctrl_point = |init_pos: f64, fin_pos: f64| {
@@ -226,20 +230,52 @@ fn has_other_players() -> Result<bool, Box<dyn std::error::Error>> {
 
 fn execute_event(event: &BotEvent, config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
     match event {
-        BotEvent::Mouse { id, action, color, delay_rng, count } => {
+        BotEvent::Mouse { id, action, color, delay_rng, count, skip_if_vanished } => {
             debug!("Executing mouse event: {}", id);
             let target_color = (color[2], color[1], color[0], 0);
             let mut rng = rand::thread_rng();
             
-            for _ in 0..*count {
-                let matches = get_pixels_with_target_color(&target_color)?;
-                if !matches.is_empty() {
-                    let target = matches[rng.gen_range(0..matches.len())];
-                    handle_click(action, target, config)?;
-                    let delay = rng.gen_range(delay_rng[0]..=delay_rng[1]);
-                    std::thread::sleep(std::time::Duration::from_millis(delay.into()));
-                } else {
-                    debug!("No color matches found for {}", id);
+            'attempt_loop: for _ in 0..*count {
+                // Full screen check
+                let matches = match get_pixels_with_target_color(&target_color) {
+                    Ok(m) if !m.is_empty() => m,
+                    _ => {
+                        if *skip_if_vanished {
+                            debug!("Color not found on screen, skipping {}", id);
+                            std::thread::sleep(std::time::Duration::from_millis(
+                                rng.gen_range(200..1500) as u64
+                            ));
+                            continue 'attempt_loop;
+                        }
+                        continue;
+                    }
+                };
+
+                // Perform action
+                let target = matches[rng.gen_range(0..matches.len())];
+                handle_click(action, target, config)?;
+
+                // Continuous monitoring
+                let delay_ms = rng.gen_range(delay_rng[0]..=delay_rng[1]) as u64; // Convert to u64
+                let check_interval = 100u64; // Explicit u64
+                let mut elapsed = 0u64;
+                
+                while elapsed < delay_ms {
+                    if *skip_if_vanished {
+                        match get_pixels_with_target_color(&target_color) {
+                            Ok(m) if m.is_empty() => {
+                                debug!("Color vanished during wait, skipping {}", id);
+                                std::thread::sleep(std::time::Duration::from_millis(
+                                    rng.gen_range(200..1500) as u64
+                                ));
+                                continue 'attempt_loop;
+                            },
+                            Err(e) => debug!("Scan error: {}", e),
+                            _ => {}
+                        }
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(check_interval));
+                    elapsed += check_interval;
                 }
             }
         },
