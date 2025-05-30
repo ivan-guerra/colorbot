@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "id": "logout door",
+      "color": [0, 0, 0],
+      "position": [806, 1011],
+      "delay_rng": [3000, 3001]
+    },
+    {
+      "id": "click here to logout",
+      "color": [0, 0, 0],
+      "position": [803, 958],
+      "delay_rng": [3000, 3001]
+    }
+  ]
+}

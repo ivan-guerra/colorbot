@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "deposit items",
+      "color": [0, 0, 0],
+      "position": [522, 808],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "withdraw crafting cape",
+      "color": [0, 0, 0],
+      "position": [312, 233],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw achievement cape",
+      "color": [0, 0, 0],
+      "position": [169, 271],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw giant pouch",
+      "color": [0, 0, 0],
+      "position": [217, 270],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw large pouch",
+      "color": [0, 0, 0],
+      "position": [263, 276],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw medium pouch",
+      "color": [0, 0, 0],
+      "position": [311, 269],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    }
+  ]
+}

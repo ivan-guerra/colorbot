@@ -1,0 +1,130 @@
+{
+  "events": [
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank nature runes",
+      "color": [0, 0, 0],
+      "position": [782, 788],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "withdraw essence",
+      "color": [0, 0, 0],
+      "position": [503, 233],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "fill giant pouch",
+      "color": [0, 0, 0],
+      "position": [826, 758],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "fill large pouch",
+      "color": [0, 0, 0],
+      "position": [867, 758],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "withdraw essence",
+      "color": [0, 0, 0],
+      "position": [503, 233],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "fill medium pouch",
+      "color": [0, 0, 0],
+      "position": [743, 794],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "withdraw essence",
+      "color": [0, 0, 0],
+      "position": [503, 233],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "click achievement cape",
+      "color": [0, 0, 0],
+      "position": [785, 758],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "press 7",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "down ladder",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [3500, 3501]
+    },
+    {
+      "id": "jump rocks",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [9000, 9001]
+    },
+    {
+      "id": "enter altar",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "craft runes 1",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [2000, 2001]
+    },
+    {
+      "id": "empty giant pouch",
+      "color": [0, 0, 0],
+      "position": [826, 758],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "empty large pouch",
+      "color": [0, 0, 0],
+      "position": [867, 758],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "craft runes 2",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "empty medium pouch",
+      "color": [0, 0, 0],
+      "position": [743, 794],
+      "delay_rng": [250, 251]
+    },
+    {
+      "id": "craft runes 3",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [4000, 4001]
+    }
+  ]
+}

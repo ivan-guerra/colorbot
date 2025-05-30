@@ -1,0 +1,835 @@
+{
+  "events": [
+    {
+      "id": "explorer's ring",
+      "color": [255, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "cabbage tile 1",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [10000, 10001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get ectophial",
+      "color": [0, 0, 0],
+      "position": [265, 203],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "ectophial teleport",
+      "color": [255, 255, 155],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "phasmatys tile 1",
+      "color": [255, 255, 25],
+      "position": [0, 0],
+      "delay_rng": [9000, 9001]
+    },
+    {
+      "id": "phasmatys tile 2",
+      "color": [255, 255, 50],
+      "position": [0, 0],
+      "delay_rng": [7500, 7501]
+    },
+    {
+      "id": "phasmatys tile 3",
+      "color": [255, 255, 75],
+      "position": [0, 0],
+      "delay_rng": [6000, 6001]
+    },
+    {
+      "id": "phasmatys tile 4",
+      "color": [255, 255, 100],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get construction cape",
+      "color": [0, 0, 0],
+      "position": [169, 200],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "home teleport",
+      "color": [255, 200, 255],
+      "position": [0, 0],
+      "delay_rng": [6000, 6001]
+    },
+    {
+      "id": "xeric's glade teleport",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [8000, 8001]
+    },
+    {
+      "id": "hosidius tile 1",
+      "color": [255, 255, 25],
+      "position": [0, 0],
+      "delay_rng": [8000, 8001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get stony basalt",
+      "color": [0, 0, 0],
+      "position": [357, 199],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "stony basalt teleport",
+      "color": [155, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get icy basalt",
+      "color": [0, 0, 0],
+      "position": [408, 197],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "icy basalt teleport",
+      "color": [155, 255, 155],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get farming cape",
+      "color": [0, 0, 0],
+      "position": [454, 200],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "farming guild teleport",
+      "color": [175, 255, 255],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get hunting cape",
+      "color": [0, 0, 0],
+      "position": [503, 200],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "hunting guild teleport",
+      "color": [120, 255, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "select guild",
+      "color": [0, 0, 0],
+      "position": [255, 921],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "varla tile 1",
+      "color": [255, 255, 25],
+      "position": [0, 0],
+      "delay_rng": [6000, 6001]
+    },
+    {
+      "id": "varla tile 2",
+      "color": [255, 255, 50],
+      "position": [0, 0],
+      "delay_rng": [10000, 10001]
+    },
+    {
+      "id": "varla tile 3",
+      "color": [255, 255, 75],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "varla tile 4",
+      "color": [255, 255, 100],
+      "position": [0, 0],
+      "delay_rng": [5500, 5501]
+    },
+    {
+      "id": "varla tile 5",
+      "color": [255, 255, 125],
+      "position": [0, 0],
+      "delay_rng": [9000, 9001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get catherby teleport",
+      "color": [0, 0, 0],
+      "position": [168, 234],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "catherby teleport",
+      "color": [255, 120, 255],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [35000, 35001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get harmony teleport",
+      "color": [0, 0, 0],
+      "position": [214, 233],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "harmony teleport",
+      "color": [100, 255, 255],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "harmony tile 1",
+      "color": [255, 255, 25],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "harmony tile 2",
+      "color": [255, 255, 50],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "harmony tile 3",
+      "color": [255, 255, 75],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "harmony tile 4",
+      "color": [255, 255, 100],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get ardougne cape",
+      "color": [0, 0, 0],
+      "position": [315, 212],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    },
+
+    {
+      "id": "ardougne teleport",
+      "color": [155, 255, 255],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "pick patch",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [30000, 30001]
+    },
+    {
+      "id": "click seed",
+      "color": [138, 255, 156],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "plant seed",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "click compost",
+      "color": [0, 155, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "apply compost",
+      "color": [0, 0, 255],
+      "position": [0, 0],
+      "delay_rng": [1500, 1501]
+    },
+    {
+      "id": "crafting guild bank teleport",
+      "color": [255, 155, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "bank snapdragon",
+      "color": [0, 0, 0],
+      "position": [786, 794],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "bank teleport",
+      "color": [0, 0, 0],
+      "position": [784, 756],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "get explorer's ring",
+      "color": [0, 0, 0],
+      "position": [215, 210],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    }
+  ]
+}

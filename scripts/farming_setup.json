@@ -1,0 +1,52 @@
+{
+  "events": [
+    {
+      "id": "bank chest",
+      "color": [255, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [5000, 5001]
+    },
+    {
+      "id": "deposit items",
+      "color": [0, 0, 0],
+      "position": [522, 808],
+      "delay_rng": [1000, 1001]
+    },
+    {
+      "id": "withdraw crafting cape",
+      "color": [0, 0, 0],
+      "position": [312, 233],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw explorer's ring",
+      "color": [0, 0, 0],
+      "position": [215, 210],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw spade",
+      "color": [0, 0, 0],
+      "position": [357, 235],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw seeds",
+      "color": [0, 0, 0],
+      "position": [408, 234],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "withdraw compost bucket",
+      "color": [0, 0, 0],
+      "position": [454, 236],
+      "delay_rng": [500, 501]
+    },
+    {
+      "id": "exit bank",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1000, 1001]
+    }
+  ]
+}

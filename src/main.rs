@@ -28,7 +28,7 @@ struct Args {
         short = 's',
         long,
         default_value_t = 3,
-        value_parser = clap::value_parser!(u32).range(1..=10),
+        value_parser = clap::value_parser!(u32).range(1..=1000),
         help = "defines the speed of the mouse, lower means faster"
     )]
     mouse_speed: u32,

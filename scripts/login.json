@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "id": "play now",
+      "color": [0, 0, 0],
+      "position": [463, 264],
+      "delay_rng": [10000, 10001]
+    },
+    {
+      "id": "click here to play",
+      "color": [0, 0, 0],
+      "position": [479, 341],
+      "delay_rng": [10000, 10001]
+    }
+  ]
+}

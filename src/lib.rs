@@ -52,6 +52,7 @@ pub struct MouseEvent {
     pub id: String,
     /// RGB color values as an array of 3 bytes
     pub color: [u8; 3],
+    pub position: [u32; 2],
     /// Range for random delay timing [min, max] in milliseconds
     pub delay_rng: [u32; 2],
 }
@@ -115,8 +116,12 @@ pub fn write_xdotool_script(
     let mut file = std::fs::File::create(path)?;
     file.write_all(b"#!/bin/bash\n")?;
 
-    let points: Vec<_> = (0..=speed * 100)
-        .map(|t| t as f64 / f64::from(speed * 100))
+    // Calculate the number of points inversely proportional to speed
+    // Higher speed = fewer points = faster movement
+    let num_points = 25 + (1000 / speed.max(1));
+
+    let points: Vec<_> = (0..=num_points)
+        .map(|t| t as f64 / f64::from(num_points))
         .map(|t| curve.eval(t))
         .map(|point| format!("xdotool mousemove {} {}\n", point.x, point.y))
         .collect();
@@ -126,7 +131,7 @@ pub fn write_xdotool_script(
     }
 
     // The call to sleep guarantees the mouse makes it to its final position before the click
-    file.write_all(b"sleep 0.5\n")?;
+    file.write_all(b"sleep 0.1\n")?; // Reduced sleep time for faster completion
     file.write_all(b"xdotool click 1\n")?;
 
     Ok(())
@@ -164,7 +169,6 @@ fn color_matches(a: (u8, u8, u8, u8), b: (u8, u8, u8, u8), tolerance: u8) -> boo
     (a.0 as i16 - b.0 as i16).abs() <= tolerance as i16
         && (a.1 as i16 - b.1 as i16).abs() <= tolerance as i16
         && (a.2 as i16 - b.2 as i16).abs() <= tolerance as i16
-        && (a.3 as i16 - b.3 as i16).abs() <= tolerance as i16
 }
 
 /// Captures the screen and finds all pixels matching a target color within a tolerance
@@ -300,8 +304,43 @@ fn calculate_centroid(boundary_points: &[Point]) -> Point {
 fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
     debug!("executing event: {:?}", event.id);
 
-    if event.id.contains("drop") {
-        drop_inventory()?;
+    let mut rng = rand::thread_rng();
+
+    if event.id == "exit bank" {
+        press_escape()?;
+
+        let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
+        debug!("sleeping for {} milliseconds", delay);
+        std::thread::sleep(std::time::Duration::from_millis(u64::from(delay)));
+
+        return Ok(());
+    }
+
+    if event.id == "press 7" {
+        press_seven()?;
+
+        let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
+        debug!("sleeping for {} milliseconds", delay);
+        std::thread::sleep(std::time::Duration::from_millis(u64::from(delay)));
+
+        return Ok(());
+    }
+
+    // Indicates we are executing a position click event
+    if event.color == [0, 0, 0] {
+        let mut click_pos = Point::new(event.position[0] as f64, event.position[1] as f64);
+        click_pos.x += rng.gen_range(-5.0..=5.0);
+        click_pos.y += rng.gen_range(-5.0..=5.0);
+
+        let curve = mouse_bez(get_mouse_position(), click_pos, config.mouse_deviation);
+        let script_path = std::path::Path::new("/tmp/colorbot.sh");
+        write_xdotool_script(script_path, curve, config.mouse_speed)?;
+        run_xdotool_script(script_path)?;
+
+        let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
+        debug!("sleeping for {} milliseconds", delay);
+        std::thread::sleep(std::time::Duration::from_millis(u64::from(delay)));
+
         return Ok(());
     }
 
@@ -313,7 +352,9 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
         let mut rng = rand::thread_rng();
         let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
         let init_pos = get_mouse_position();
-        let fin_pos = matches[rng.gen_range(0..matches.len())];
+        let mut fin_pos = calculate_centroid(&matches);
+        fin_pos.x += rng.gen_range(-5.0..=5.0);
+        fin_pos.y += rng.gen_range(-5.0..=5.0);
 
         let curve = mouse_bez(init_pos, fin_pos, config.mouse_deviation);
         let script_path = std::path::Path::new("/tmp/colorbot.sh");
@@ -332,24 +373,6 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
     Ok(())
 }
 
-fn has_other_players() -> Result<bool, Box<dyn std::error::Error>> {
-    let color = (255, 255, 0, 0);
-    let matches = get_pixels_with_target_color(&color)?;
-
-    Ok(!matches.is_empty())
-}
-
-fn hop_world() -> Result<(), Box<dyn std::error::Error>> {
-    let script_path = std::path::Path::new("/tmp/hop_world.sh");
-    let mut file = std::fs::File::create(script_path)?;
-    file.write_all(b"#!/bin/bash\n")?;
-    file.write_all(b"xdotool key ctrl+shift+Right\n")?;
-
-    run_xdotool_script(script_path)?;
-
-    Ok(())
-}
-
 fn press_escape() -> Result<(), Box<dyn std::error::Error>> {
     let script_path = std::path::Path::new("/tmp/press_escape.sh");
     let mut file = std::fs::File::create(script_path)?;
@@ -361,58 +384,11 @@ fn press_escape() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn press_one() -> Result<(), Box<dyn std::error::Error>> {
-    let script_path = std::path::Path::new("/tmp/press_one.sh");
+fn press_seven() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/press_seven.sh");
     let mut file = std::fs::File::create(script_path)?;
     file.write_all(b"#!/bin/bash\n")?;
-    file.write_all(b"xdotool key 1\n")?;
-
-    run_xdotool_script(script_path)?;
-
-    Ok(())
-}
-
-fn press_two() -> Result<(), Box<dyn std::error::Error>> {
-    let script_path = std::path::Path::new("/tmp/press_two.sh");
-    let mut file = std::fs::File::create(script_path)?;
-    file.write_all(b"#!/bin/bash\n")?;
-    file.write_all(b"xdotool key 2\n")?;
-
-    run_xdotool_script(script_path)?;
-
-    Ok(())
-}
-
-fn drop_inventory() -> Result<(), Box<dyn std::error::Error>> {
-    let script_path = std::path::Path::new("/tmp/drop_inventory.sh");
-    let mut file = std::fs::File::create(script_path)?;
-    file.write_all(b"#!/bin/bash\n")?;
-
-    let origin = Point::new(741.0, 753.0);
-    let mut inventory_slots = vec![];
-    for i in 0..4 {
-        for j in 0..7 {
-            // add +/- 2 pixels to each x and y randomly
-            let x = origin.x + i as f64 * 45.0 + rand::thread_rng().gen_range(-2..=2) as f64;
-            let y = origin.y + j as f64 * 35.0 + rand::thread_rng().gen_range(-2..=2) as f64;
-            inventory_slots.push(Point::new(x, y));
-        }
-    }
-
-    let mut init_pos = get_mouse_position();
-    for p in inventory_slots {
-        let curve = mouse_bez(init_pos, p, 30);
-        (0..=50)
-            .map(|t| t as f64 / 50.0)
-            .map(|t| curve.eval(t))
-            .for_each(|point| {
-                file.write_all(format!("xdotool mousemove {} {}\n", point.x, point.y).as_bytes())
-                    .unwrap();
-            });
-        file.write_all(b"xdotool click 1\n")?;
-
-        init_pos = p;
-    }
+    file.write_all(b"xdotool key 7\n")?;
 
     run_xdotool_script(script_path)?;
 
@@ -433,12 +409,6 @@ pub fn run_event_loop(config: &BotConfig) -> Result<(), Box<dyn std::error::Erro
     let start_time = std::time::Instant::now();
     let runtime = std::time::Duration::from_secs(u64::from(config.runtime));
     let end_time = start_time + runtime;
-
-    while has_other_players()? {
-        hop_world()?;
-        std::thread::sleep(std::time::Duration::from_secs(5));
-        press_escape()?;
-    }
 
     while std::time::Instant::now() < end_time {
         // Execute all events in sequence
