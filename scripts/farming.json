@@ -822,7 +822,7 @@
     {
       "id": "get explorer's ring",
       "color": [0, 0, 0],
-      "position": [215, 210],
+      "position": [214, 196],
       "delay_rng": [1000, 1001]
     },
     {
