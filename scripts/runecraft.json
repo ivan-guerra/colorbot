@@ -124,7 +124,7 @@
       "id": "crafting guild bank teleport",
       "color": [255, 155, 0],
       "position": [0, 0],
-      "delay_rng": [4000, 4001]
+      "delay_rng": [3000, 3001]
     }
   ]
 }
