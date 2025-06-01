@@ -749,7 +749,7 @@
     {
       "id": "get ardougne cape",
       "color": [0, 0, 0],
-      "position": [315, 212],
+      "position": [311, 196],
       "delay_rng": [1000, 1001]
     },
     {
