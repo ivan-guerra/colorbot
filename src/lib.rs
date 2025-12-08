@@ -306,23 +306,12 @@ fn execute_event(event: &MouseEvent, config: &BotConfig) -> Result<(), Box<dyn s
 
     let mut rng = rand::thread_rng();
 
-    if event.id == "exit bank" {
-        press_escape()?;
-
-        let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
-        debug!("sleeping for {} milliseconds", delay);
-        std::thread::sleep(std::time::Duration::from_millis(u64::from(delay)));
-
+    if event.id == "drop" {
+        drop_inventory(config)?;
         return Ok(());
     }
-
-    if event.id == "press 7" {
-        press_seven()?;
-
-        let delay = rng.gen_range(event.delay_rng[0]..=event.delay_rng[1]);
-        debug!("sleeping for {} milliseconds", delay);
-        std::thread::sleep(std::time::Duration::from_millis(u64::from(delay)));
-
+    if event.id.contains("exit") {
+        press_escape()?;
         return Ok(());
     }
 
@@ -384,13 +373,139 @@ fn press_escape() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn press_seven() -> Result<(), Box<dyn std::error::Error>> {
-    let script_path = std::path::Path::new("/tmp/press_seven.sh");
+fn is_active_salvage() -> Result<bool, Box<dyn std::error::Error>> {
+    let target_color = (255, 0, 0, 255);
+    let matches = get_pixels_with_target_color(&target_color)?;
+
+    Ok(!matches.is_empty())
+}
+
+fn world_hop() -> Result<(), Box<dyn std::error::Error>> {
+    let script_path = std::path::Path::new("/tmp/world_hop.sh");
     let mut file = std::fs::File::create(script_path)?;
     file.write_all(b"#!/bin/bash\n")?;
-    file.write_all(b"xdotool key 7\n")?;
+    file.write_all(b"xdotool key ctrl+shift+Right\n")?;
 
     run_xdotool_script(script_path)?;
+    std::thread::sleep(std::time::Duration::from_secs(10));
+
+    press_escape()?;
+
+    Ok(())
+}
+
+pub fn drop_inventory(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
+    let grid_cols = 4;
+    let grid_rows = 7;
+    let start_x = 739;
+    let start_y = 753;
+    let col_spacing = 44;
+    let row_spacing = 35;
+
+    let mut rng = rand::thread_rng();
+
+    for col in 0..grid_cols {
+        for row in 0..grid_rows {
+            // Skip all items in the first row
+            if row == 0 {
+                continue;
+            }
+            // Skip the first two items in the second row
+            if row == 1 && col < 2 {
+                continue;
+            }
+
+            let base_x = start_x + col * col_spacing;
+            let base_y = start_y + row * row_spacing;
+
+            let offset_x = rng.gen_range(-3..=3);
+            let offset_y = rng.gen_range(-3..=3);
+
+            let x = base_x + offset_x;
+            let y = base_y + offset_y;
+
+            let click_pos = kurbo::Point::new(x as f64, y as f64);
+            let curve = mouse_bez(get_mouse_position(), click_pos, config.mouse_deviation);
+            let script_path = std::path::Path::new("/tmp/colorbot_inventory_click.sh");
+            write_xdotool_script(script_path, curve, config.mouse_speed)?;
+            run_xdotool_script(script_path)?;
+
+            let delay = rng.gen_range(50..=100);
+            std::thread::sleep(std::time::Duration::from_millis(delay));
+        }
+    }
+    Ok(())
+}
+
+fn enable_extractor(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
+    let mut rng = rand::thread_rng();
+    let mut click_pos = Point::new(399.0, 387.0);
+    click_pos.x += rng.gen_range(-5.0..=5.0);
+    click_pos.y += rng.gen_range(-5.0..=5.0);
+
+    let curve = mouse_bez(get_mouse_position(), click_pos, config.mouse_deviation);
+    let script_path = std::path::Path::new("/tmp/colorbot.sh");
+    write_xdotool_script(script_path, curve, config.mouse_speed)?;
+    run_xdotool_script(script_path)?;
+
+    std::thread::sleep(std::time::Duration::from_secs(3));
+
+    Ok(())
+}
+
+fn click_steering(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
+    let mut rng = rand::thread_rng();
+    let mut click_pos = Point::new(705.0, 712.0);
+    click_pos.x += rng.gen_range(-5.0..=5.0);
+    click_pos.y += rng.gen_range(-5.0..=5.0);
+
+    let curve = mouse_bez(get_mouse_position(), click_pos, config.mouse_deviation);
+    let script_path = std::path::Path::new("/tmp/colorbot.sh");
+    write_xdotool_script(script_path, curve, config.mouse_speed)?;
+    run_xdotool_script(script_path)?;
+
+    std::thread::sleep(std::time::Duration::from_millis(1500));
+
+    Ok(())
+}
+
+fn click_assign(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
+    let mut rng = rand::thread_rng();
+    let mut click_pos = Point::new(861.0, 973.0);
+    click_pos.x += rng.gen_range(-5.0..=5.0);
+    click_pos.y += rng.gen_range(-5.0..=5.0);
+
+    let curve = mouse_bez(get_mouse_position(), click_pos, config.mouse_deviation);
+    let script_path = std::path::Path::new("/tmp/colorbot.sh");
+    write_xdotool_script(script_path, curve, config.mouse_speed)?;
+    run_xdotool_script(script_path)?;
+
+    std::thread::sleep(std::time::Duration::from_millis(1500));
+
+    Ok(())
+}
+
+fn click_jenkins(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
+    let mut rng = rand::thread_rng();
+    let mut click_pos = Point::new(795.0, 901.0);
+    click_pos.x += rng.gen_range(-5.0..=5.0);
+    click_pos.y += rng.gen_range(-5.0..=5.0);
+
+    let curve = mouse_bez(get_mouse_position(), click_pos, config.mouse_deviation);
+    let script_path = std::path::Path::new("/tmp/colorbot.sh");
+    write_xdotool_script(script_path, curve, config.mouse_speed)?;
+    run_xdotool_script(script_path)?;
+
+    std::thread::sleep(std::time::Duration::from_millis(1500));
+
+    Ok(())
+}
+
+fn assign_salvaging(config: &BotConfig) -> Result<(), Box<dyn std::error::Error>> {
+    click_steering(config)?;
+    click_assign(config)?;
+    click_jenkins(config)?;
+    press_escape()?;
 
     Ok(())
 }
@@ -409,10 +524,30 @@ pub fn run_event_loop(config: &BotConfig) -> Result<(), Box<dyn std::error::Erro
     let start_time = std::time::Instant::now();
     let runtime = std::time::Duration::from_secs(u64::from(config.runtime));
     let end_time = start_time + runtime;
+    let mut extractor = 0;
+    let mut assign = 0;
 
     while std::time::Instant::now() < end_time {
         // Execute all events in sequence
         for event in &events {
+            if config.script.to_string_lossy().contains("salvage") {
+                while !is_active_salvage()? {
+                    extractor = 0;
+                    assign = 0;
+                    world_hop()?;
+                }
+                debug!("found active salvage");
+
+                extractor += 1;
+                if extractor == 1 {
+                    enable_extractor(config)?;
+                }
+                assign += 1;
+                if assign == 1 {
+                    assign_salvaging(config)?;
+                }
+            }
+
             execute_event(event, config)?;
         }
     }

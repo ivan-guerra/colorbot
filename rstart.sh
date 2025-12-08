@@ -18,21 +18,15 @@ function kill_client() {
 
 function load_client() {
     # Start the game launcher
-    /home/ieg/.local/share/flatpak/exports/bin/com.adamcake.Bolt &> /dev/null &
+    /var/lib/flatpak/exports/bin/com.adamcake.Bolt &> /dev/null &
     sleep 15
 
     # Click on the right hand side of a 1920x1080 screen on launcher
     xdotool mousemove 1800 540 click 1
     delay
 
-    # Tab through the launcher options to the play button
-    for _ in {1..6}; do
-        xdotool key Tab
-        delay
-    done
-
     # Press the play button
-    xdotool key Return
+    xdotool mousemove 1441 230 click 1
     sleep 30
 
     # Click in the center of 1920x1080 screen on launcher
@@ -66,8 +60,11 @@ function adjust_camera() {
     sleep 2
     xdotool keyup Up
 
-    # Scroll down to zoom out.
-    xdotool click --repeat 64 5
+    # No need to do this the default of the restarted client is sufficient.
+    # Scroll up to zoom in.
+    # Need to make this work such that the zoom is set to 400 in the game
+    # settings.
+    # xdotool click --repeat 64 4
     delay
 
     # Adjust camera slightly to the right.

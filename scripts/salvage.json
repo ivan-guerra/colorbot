@@ -1,0 +1,118 @@
+{
+  "events": [
+    {
+      "id": "hook 1",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "hook 2",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "extractor",
+      "color": [0, 205, 0],
+      "position": [0, 0],
+      "delay_rng": [2000, 2900]
+    },
+    {
+      "id": "hook 3",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "hook 4",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "extractor",
+      "color": [0, 205, 0],
+      "position": [0, 0],
+      "delay_rng": [2000, 2900]
+    },
+    {
+      "id": "hook 5",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "hook 6",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "extractor",
+      "color": [0, 205, 0],
+      "position": [0, 0],
+      "delay_rng": [2000, 2900]
+    },
+    {
+      "id": "hook 7",
+      "color": [205, 0, 205],
+      "position": [0, 0],
+      "delay_rng": [30100, 31100]
+    },
+    {
+      "id": "salvage",
+      "color": [165, 165, 0],
+      "position": [0, 0],
+      "delay_rng": [41000, 41100]
+    },
+    {
+      "id": "extractor",
+      "color": [0, 205, 0],
+      "position": [0, 0],
+      "delay_rng": [2000, 2900]
+    },
+    {
+      "id": "drop",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [0, 0]
+    },
+    {
+      "id": "open chest",
+      "color": [205, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [1100, 1250]
+    },
+    {
+      "id": "grab salvage",
+      "color": [0, 0, 0],
+      "position": [143, 365],
+      "delay_rng": [750, 1000]
+    },
+    {
+      "id": "exit chest",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [0, 0]
+    },
+    {
+      "id": "salvage",
+      "color": [165, 165, 0],
+      "position": [0, 0],
+      "delay_rng": [26000, 26100]
+    },
+    {
+      "id": "drop",
+      "color": [0, 0, 0],
+      "position": [0, 0],
+      "delay_rng": [0, 0]
+    },
+    {
+      "id": "extractor",
+      "color": [0, 205, 0],
+      "position": [0, 0],
+      "delay_rng": [2000, 2900]
+    }
+  ]
+}

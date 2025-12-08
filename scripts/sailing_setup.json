@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "id": "move to back of boat",
+      "color": [0, 0, 0],
+      "position": [494, 855],
+      "delay_rng": [2500, 3000]
+    },
+    {
+      "id": "activate extractor",
+      "color": [0, 0, 0],
+      "position": [716, 528],
+      "delay_rng": [1500, 2000]
+    }
+  ]
+}

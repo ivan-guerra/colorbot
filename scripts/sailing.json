@@ -1,0 +1,10 @@
+{
+  "events": [
+    {
+      "id": "harvest crystal",
+      "color": [0, 0, 0],
+      "position": [719, 546],
+      "delay_rng": [62000, 62125]
+    }
+  ]
+}
