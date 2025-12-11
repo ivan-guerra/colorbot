@@ -18,7 +18,7 @@ function kill_client() {
 
 function load_client() {
     # Start the game launcher
-    /var/lib/flatpak/exports/bin/com.adamcake.Bolt &> /dev/null &
+    bolt-launcher &> /dev/null &
     sleep 15
 
     # Click on the right hand side of a 1920x1080 screen on launcher
@@ -42,7 +42,7 @@ function load_client() {
     delay
 
     # Move client to the left side of the screen
-    xdotool key Shift+Super+Left
+    xdotool key Shift+Super+h
     delay
 }
 
