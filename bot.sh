@@ -1,69 +1,49 @@
 #!/bin/bash
 
 MOUSE_SPEED=50
-
-function log_info() {
-    local timestamp=
-
-    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    echo "[$timestamp] $1"
-}
+COLORBOT_EXE="/home/ieg/dev/colorbot/target/release/colorbot"
 
 function login() {
-    colorbot -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/login.json
+    $COLORBOT_EXE -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/login.json
 }
 
 function logout() {
-    colorbot -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/logout.json
+    $COLORBOT_EXE -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/logout.json
 }
 
-function run_herb_bot() {
+function run_bot() {
+    local bot_script="/home/ieg/dev/colorbot/scripts/farming.json"
+
     login
-    colorbot -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/farming_setup.json
-    colorbot -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/farming.json
+    $COLORBOT_EXE -s $MOUSE_SPEED -r 1 $bot_script
     logout
 }
 
-function run_runecraft_bot() {
-    login
-    colorbot -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/runecraft_setup.json
-    colorbot -s $MOUSE_SPEED -r 3600 /home/ieg/dev/colorbot/scripts/runecraft.json
-    logout
+function random_wait() {
+    local min=5400  # 1.5 hours in seconds
+    local max=7200  # 2 hours in seconds
+    local sleep_time=$((RANDOM % (max - min + 1) + min))
+
+    echo "waiting for $((sleep_time / 60)) minutes before next run..."
 }
 
 function main {
-    log_info "starting money bot"
+    echo "starting bot session"
 
-    herb_run_count=0
-    while true; do
-        current_hour=$(date +%H)
-
-        if [ "$current_hour" -ge 23 ] || [ "$current_hour" -lt 7 ]; then
-            log_info "it's between 11 pm and 7 am, stopping the bot."
+    for i in {1..4}; do
+        # Don't start another iteration if it's past 11:59 PM
+        current_time=$(date +%H:%M)
+        if [[ "$current_time" < "23:59" ]]; then
+            echo "current time is $current_time, stopping bot session."
             break
         fi
 
-        log_info "running herb bot..."
-        run_herb_bot
-        herb_run_count=$((herb_run_count + 1))
-        log_info "herb bot completed (run $herb_run_count)."
-
-        # Run runecraft bot after the 2nd, 4th, and 6th herb runs
-        if [ "$herb_run_count" -eq 2 ] || [ "$herb_run_count" -eq 4 ] || [ "$herb_run_count" -eq 6 ]; then
-            log_info "running runecraft bot after herb run $herb_run_count..."
-            run_runecraft_bot
-            log_info "runecraft bot completed."
-
-            log_info "waiting for 30 minutes before next herb run..."
-            sleep 1800
-        else
-            log_info "waiting for 90 minutes before next herb run..."
-            sleep 5400
-        fi
-
+        echo "iteration $i: running bot..."
+        run_bot
+        random_wait
     done
 
-    log_info "money bot completed."
+    echo "bot session completed."
 }
 
 main
