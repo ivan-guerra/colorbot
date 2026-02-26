@@ -1,0 +1,60 @@
+[
+  {
+    "type": "color",
+    "id": "bank",
+    "rgb": [255, 0, 255],
+    "delay_rng": [6000, 6250]
+  },
+  {
+    "type": "mouse",
+    "id": "withdraw logs",
+    "pos": [406, 234],
+    "delay_rng": [1000, 1250]
+  },
+  {
+    "type": "keypress",
+    "id": "close bank",
+    "keycode": "Escape",
+    "delay_rng": [500, 750],
+    "count": 1
+  },
+  {
+    "type": "color",
+    "id": "fm start 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [9000, 9250]
+  },
+  {
+    "type": "special",
+    "id": "firemake"
+  },
+  {
+    "type": "color",
+    "id": "bank",
+    "rgb": [255, 0, 255],
+    "delay_rng": [6000, 6250]
+  },
+  {
+    "type": "mouse",
+    "id": "withdraw logs",
+    "pos": [406, 234],
+    "delay_rng": [1000, 1250]
+  },
+  {
+    "type": "keypress",
+    "id": "close bank",
+    "keycode": "Escape",
+    "delay_rng": [500, 750],
+    "count": 1
+  },
+  {
+    "type": "color",
+    "id": "fm start 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [9250, 9500]
+  },
+  {
+    "type": "special",
+    "id": "firemake"
+  }
+]
