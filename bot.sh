@@ -25,6 +25,7 @@ function random_wait() {
     local sleep_time=$((RANDOM % (max - min + 1) + min))
 
     echo "waiting for $((sleep_time / 60)) minutes before next run..."
+    sleep $sleep_time
 }
 
 function main {
@@ -32,11 +33,11 @@ function main {
 
     for i in {1..4}; do
         # Don't start another iteration if it's past 11:59 PM
-        # current_time=$(date +%H:%M)
-        # if [[ "$current_time" < "23:59" ]]; then
-        #     echo "current time is $current_time, stopping bot session."
-        #     break
-        # fi
+        current_time=$(date +%H:%M)
+        if [[ "$current_time" < "23:59" ]]; then
+            echo "current time is $current_time, stopping bot session."
+            break
+        fi
 
         echo "iteration $i: running bot..."
         run_bot
