@@ -32,10 +32,10 @@ function main {
     echo "starting bot session"
 
     for i in {1..4}; do
-        # Don't start another iteration if it's past 11:59 PM
-        current_time=$(date +%H:%M)
-        if [[ "$current_time" < "23:59" ]]; then
-            echo "current time is $current_time, stopping bot session."
+        # Check if current time is between 11 pm and 7 am
+        current_hour=$(date +%H)
+        if [ "$current_hour" -ge 23 ] || [ "$current_hour" -lt 7 ]; then
+            log_info "it's between 11 pm and 7 am, stopping the bot."
             break
         fi
 
