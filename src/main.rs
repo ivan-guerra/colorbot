@@ -1,5 +1,5 @@
+use anyhow::{Context, Result};
 use clap::Parser;
-use simplelog::*;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -13,54 +13,33 @@ struct Args {
         default_value_t = 3600,
         help = "script runtime in seconds"
     )]
-    runtime: u32,
-
-    #[arg(
-        short = 'd',
-        long,
-        default_value_t = 30,
-        value_parser = clap::value_parser!(u32).range(0..=100),
-        help = "determines the deviation of the mouse during pathing"
-    )]
-    mouse_deviation: u32,
-
-    #[arg(
-        short = 's',
-        long,
-        default_value_t = 3,
-        value_parser = clap::value_parser!(u32).range(1..=1000),
-        help = "defines the speed of the mouse, lower means faster"
-    )]
-    mouse_speed: u32,
+    runtime: u64,
 
     #[arg(short = 'g', long, default_value_t = false, help = "enable logging")]
     debug: bool,
 }
 
-fn main() {
+fn main() -> Result<()> {
     let args = Args::parse();
-    let config = colorbot::BotConfig::new(
-        args.script,
-        args.runtime,
-        args.mouse_deviation,
-        args.mouse_speed,
-        args.debug,
-    );
+    let config = colorbot::BotConfig {
+        script: args.script,
+        runtime: args.runtime,
+        debug: args.debug,
+    };
 
     if config.debug {
-        if let Err(e) = TermLogger::init(
-            LevelFilter::Debug,
-            Config::default(),
-            TerminalMode::Mixed,
-            ColorChoice::Auto,
-        ) {
-            eprintln!("error: {}", e);
-            std::process::exit(1);
-        }
+        simplelog::TermLogger::init(
+            simplelog::LevelFilter::Debug,
+            simplelog::ConfigBuilder::new()
+                .add_filter_allow_str("colorbot")
+                .build(),
+            simplelog::TerminalMode::Mixed,
+            simplelog::ColorChoice::Auto,
+        )
+        .context("Failed to initialize logger")?;
     }
 
-    if let Err(e) = colorbot::run_event_loop(&config) {
-        eprintln!("error: {}", e);
-        std::process::exit(1);
-    }
+    colorbot::run_event_loop(&config).context("Failed to run event loop")?;
+
+    Ok(())
 }

@@ -33,6 +33,6 @@ pkgs.mkShell {
   PKG_CONFIG_PATH = "${pkgs.xorg.libxcb}/lib/pkgconfig";
 
   shellHook = ''
-    echo "rsbot development environment loaded"
+    echo "colorbot development environment loaded"
   '';
 }
