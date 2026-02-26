@@ -14,7 +14,8 @@ function run_bot() {
     local bot_script="/home/ieg/dev/colorbot/scripts/firemaking.json"
 
     login
-    $COLORBOT_EXE -r 1 $bot_script
+    echo "running bot script: $(basename $bot_script) for 3 hours..."
+    $COLORBOT_EXE -r 10800 $bot_script
     logout
 }
 
