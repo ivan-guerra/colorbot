@@ -1,6 +1,5 @@
 #!/etc/profiles/per-user/ieg/bin/bash
 
-MOUSE_SPEED=50
 COLORBOT_EXE="/home/ieg/dev/colorbot/target/release/colorbot"
 
 function delay() {
@@ -48,11 +47,11 @@ function load_client() {
 }
 
 function login() {
-    $COLORBOT_EXE -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/login.json
+    $COLORBOT_EXE -r 1 /home/ieg/dev/colorbot/scripts/login.json
 }
 
 function logout() {
-    $COLORBOT_EXE -s $MOUSE_SPEED -r 1 /home/ieg/dev/colorbot/scripts/logout.json
+    $COLORBOT_EXE -r 1 /home/ieg/dev/colorbot/scripts/logout.json
 }
 
 function adjust_camera() {
