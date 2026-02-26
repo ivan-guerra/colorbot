@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/etc/profiles/per-user/ieg/bin/bash
 
 MOUSE_SPEED=50
 COLORBOT_EXE="/home/ieg/dev/colorbot/target/release/colorbot"
