@@ -230,48 +230,22 @@ fn press_key(keycode: &str) -> Result<()> {
     Ok(())
 }
 
-fn firemake() -> Result<()> {
+fn drop_inventory() -> Result<()> {
     const INVENTORY_ROWS: usize = 7;
     const INVENTORY_COLS: usize = 4;
     const BASE_X: f64 = 743.0;
     const BASE_Y: f64 = 754.0;
     const COL_SPACING: f64 = 40.0;
     const ROW_SPACING: f64 = 37.0;
-    const BURN_LIMIT: usize = 20;
-    const BURN_DELAY_SEC: u64 = 5;
 
-    let click_tinderbox = || -> Result<()> {
-        let tinderbox_pos = Point::new(BASE_X, BASE_Y);
-        move_mouse(tinderbox_pos)?;
-        left_click()?;
-        std::thread::sleep(Duration::from_millis(250));
-        Ok(())
-    };
-
-    let mut total_logs = 0;
     for row in 0..INVENTORY_ROWS {
         for col in 0..INVENTORY_COLS {
-            if row == 0 && col == 0 {
-                continue; // Skip the tinderbox slot
-            }
-
             let x = BASE_X + col as f64 * COL_SPACING;
             let y = BASE_Y + row as f64 * ROW_SPACING;
             let inventory_pos = Point::new(x, y);
 
-            click_tinderbox()?;
             move_mouse(inventory_pos)?;
             left_click()?;
-            std::thread::sleep(Duration::from_secs(BURN_DELAY_SEC));
-
-            if total_logs >= BURN_LIMIT {
-                debug!(
-                    "Reached burn limit of {} logs, stopping firemaking",
-                    BURN_LIMIT
-                );
-                return Ok(());
-            }
-            total_logs += 1;
         }
     }
     Ok(())
@@ -327,8 +301,10 @@ fn exec_event(event: &BotEvent) -> Result<()> {
         }
         BotEvent::SpecialAction { id } => {
             debug!("Executing special action '{}'", id);
-            if id == "firemake" {
-                firemake().context("Failed to execute firemaking action")?;
+            if id == "drop_inventory" {
+                drop_inventory().context("Failed to execute inventory drop action")?;
+            } else {
+                warn!("Unknown special action '{}'", id);
             }
         }
     }
