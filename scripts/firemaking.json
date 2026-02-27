@@ -3,7 +3,7 @@
     "type": "color",
     "id": "bank",
     "rgb": [255, 0, 255],
-    "delay_rng": [6000, 6250]
+    "delay_rng": [2000, 2250]
   },
   {
     "type": "mouse",
@@ -15,46 +15,26 @@
     "type": "keypress",
     "id": "close bank",
     "keycode": "Escape",
-    "delay_rng": [500, 750],
+    "delay_rng": [750, 1000],
     "count": 1
-  },
-  {
-    "type": "color",
-    "id": "fm start 1",
-    "rgb": [255, 0, 0],
-    "delay_rng": [9000, 9250]
-  },
-  {
-    "type": "special",
-    "id": "firemake"
-  },
-  {
-    "type": "color",
-    "id": "bank",
-    "rgb": [255, 0, 255],
-    "delay_rng": [6000, 6250]
   },
   {
     "type": "mouse",
-    "id": "withdraw logs",
-    "pos": [406, 234],
-    "delay_rng": [1000, 1250]
+    "id": "click logs",
+    "pos": [742, 756],
+    "delay_rng": [750, 1000]
+  },
+  {
+    "type": "mouse",
+    "id": "click fire",
+    "pos": [428, 516],
+    "delay_rng": [750, 1000]
   },
   {
     "type": "keypress",
-    "id": "close bank",
-    "keycode": "Escape",
-    "delay_rng": [500, 750],
+    "id": "start burning",
+    "keycode": "space",
+    "delay_rng": [154000, 154250],
     "count": 1
-  },
-  {
-    "type": "color",
-    "id": "fm start 2",
-    "rgb": [0, 0, 255],
-    "delay_rng": [9250, 9500]
-  },
-  {
-    "type": "special",
-    "id": "firemake"
   }
 ]

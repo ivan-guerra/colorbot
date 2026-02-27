@@ -11,11 +11,13 @@ function logout() {
 }
 
 function run_bot() {
-    local bot_script="/home/ieg/dev/colorbot/scripts/firemaking.json"
+    local fm_setup_script="/home/ieg/dev/colorbot/scripts/firemaking_setup.json"
+    local fm_script="/home/ieg/dev/colorbot/scripts/firemaking.json"
 
     login
-    echo "running bot script: $(basename $bot_script) for 3 hours..."
-    $COLORBOT_EXE -r 10800 $bot_script
+    echo "running bot script: firemaking script for 3 hours..."
+    $COLORBOT_EXE -r 1 $fm_setup_script
+    $COLORBOT_EXE -r 10800 $fm_script
     logout
 }
 
