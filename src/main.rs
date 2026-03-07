@@ -1,9 +1,22 @@
+use crate::event::BotEvent;
+
 use anyhow::{Context, Result};
 use clap::Parser;
+use log::debug;
+use std::{
+    fs::File,
+    io::BufReader,
+    path::Path,
+    time::{Duration, Instant},
+};
+
+mod controls;
+mod event;
+mod special_actions;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-struct Args {
+struct BotConfig {
     #[arg(help = "path to bot script")]
     script: std::path::PathBuf,
 
@@ -19,13 +32,40 @@ struct Args {
     debug: bool,
 }
 
+fn read_bot_script(path: &Path) -> Result<Vec<BotEvent>> {
+    let file = File::open(path).context("Failed to open bot script")?;
+    let reader = BufReader::new(file);
+    let events: Vec<BotEvent> =
+        serde_json::from_reader(reader).context("Failed to parse bot script")?;
+
+    Ok(events)
+}
+
+fn run_event_loop(config: &BotConfig) -> Result<()> {
+    let events = read_bot_script(&config.script)?;
+    debug!("Loaded {} events from script", events.len());
+
+    let runtime = Duration::from_secs(config.runtime);
+    let start_time = Instant::now();
+    let end_time = start_time + runtime;
+    debug!("Starting event loop for {} seconds", config.runtime);
+
+    let mut iteration = 0;
+    while Instant::now() < end_time {
+        debug!("Starting iteration {}", iteration);
+
+        for event in &events {
+            event.exec()?;
+        }
+        iteration += 1;
+    }
+
+    debug!("Event loop completed after {} iterations", iteration);
+    Ok(())
+}
+
 fn main() -> Result<()> {
-    let args = Args::parse();
-    let config = colorbot::BotConfig {
-        script: args.script,
-        runtime: args.runtime,
-        debug: args.debug,
-    };
+    let config = BotConfig::parse();
 
     if config.debug {
         simplelog::TermLogger::init(
@@ -39,7 +79,7 @@ fn main() -> Result<()> {
         .context("Failed to initialize logger")?;
     }
 
-    colorbot::run_event_loop(&config).context("Failed to run event loop")?;
+    run_event_loop(&config).context("Failed to run event loop")?;
 
     Ok(())
 }
