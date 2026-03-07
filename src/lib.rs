@@ -1,7 +1,7 @@
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use device_query::{DeviceQuery, DeviceState};
 use kurbo::{CubicBez, ParamCurve, Point};
-use log::{debug, warn};
+use log::debug;
 use rand::random_range;
 use scrap::{Capturer, Display};
 use serde::Deserialize;
@@ -183,8 +183,8 @@ fn move_mouse(target: Point) -> Result<()> {
     const MOUSE_SETTLE_DELAY_MS: u64 = 50;
     let start_pos = get_mouse_pos();
     let target_rand = Point::new(
-        target.x + f64::from(random_range(-2..=2)),
-        target.y + f64::from(random_range(-2..=2)),
+        target.x + f64::from(random_range(-5..=5)),
+        target.y + f64::from(random_range(-5..=5)),
     );
     let curve = mouse_bez(start_pos, target_rand);
     let points: Vec<Point> = (0..=100)
@@ -251,6 +251,99 @@ fn drop_inventory() -> Result<()> {
     Ok(())
 }
 
+fn canifis_recovery() -> Result<()> {
+    let red_bgra = (0, 0, 255, 0);
+    let matches = get_pixels_with_target_color(&red_bgra)?;
+    if matches.is_empty() {
+        debug!("No obstacle failure detected, skipping Canifis recovery");
+    } else {
+        debug!(
+            "Detected obstacle failure with {} matching pixels, executing Canifis recovery",
+            matches.len()
+        );
+        let canifis_recovery_events = vec![
+            BotEvent::Color {
+                id: "tile 1".to_string(),
+                rgb: [255, 0, 255],
+                delay_rng: [4500, 4750],
+            },
+            BotEvent::Color {
+                id: "tile 2".to_string(),
+                rgb: [0, 0, 255],
+                delay_rng: [6500, 6750],
+            },
+            BotEvent::Color {
+                id: "tile 3".to_string(),
+                rgb: [255, 0, 0],
+                delay_rng: [5500, 5750],
+            },
+            BotEvent::Mouse {
+                id: "obstacle 1".to_string(),
+                pos: [398, 399],
+                delay_rng: [7500, 7750],
+            },
+            BotEvent::Color {
+                id: "mark of grace".to_string(),
+                rgb: [0, 255, 255],
+                delay_rng: [5000, 5250],
+            },
+            BotEvent::Color {
+                id: "obstacle 2".to_string(),
+                rgb: [255, 0, 0],
+                delay_rng: [5500, 5750],
+            },
+            BotEvent::Color {
+                id: "mark of grace".to_string(),
+                rgb: [0, 255, 255],
+                delay_rng: [5000, 5250],
+            },
+            BotEvent::Color {
+                id: "obstacle 3".to_string(),
+                rgb: [0, 0, 255],
+                delay_rng: [4500, 4750],
+            },
+            BotEvent::Color {
+                id: "mark of grace".to_string(),
+                rgb: [0, 255, 255],
+                delay_rng: [5000, 5250],
+            },
+            BotEvent::Color {
+                id: "obstacle 4".to_string(),
+                rgb: [255, 0, 255],
+                delay_rng: [6000, 6250],
+            },
+            BotEvent::SpecialAction {
+                id: "canifis_recovery".to_string(),
+            },
+        ];
+
+        for event in canifis_recovery_events {
+            exec_event(&event)?;
+        }
+    }
+    Ok(())
+}
+
+fn logout() -> Result<()> {
+    let logout_events = vec![
+        BotEvent::Mouse {
+            id: "logout door".to_string(),
+            pos: [806, 1011],
+            delay_rng: [3000, 3001],
+        },
+        BotEvent::Mouse {
+            id: "click here to logout".to_string(),
+            pos: [803, 958],
+            delay_rng: [3000, 3001],
+        },
+    ];
+
+    for event in logout_events {
+        exec_event(&event)?;
+    }
+    Ok(())
+}
+
 fn exec_event(event: &BotEvent) -> Result<()> {
     let sleep_random_delay = |delay_rng: &[u32; 2]| {
         let delay = random_range(delay_rng[0]..=delay_rng[1]);
@@ -289,7 +382,8 @@ fn exec_event(event: &BotEvent) -> Result<()> {
             let matches = get_pixels_with_target_color(&target_bgra)?;
 
             if matches.is_empty() {
-                warn!("No pixels found matching color for event '{}'", id);
+                logout().context("Failed to execute logout sequence after color event failure")?;
+                bail!("No matching pixels found for event '{}', logged out", id);
             } else {
                 debug!("Found {} matching pixels for event '{}'", matches.len(), id);
                 let centroid = calculate_centroid(&matches);
@@ -303,8 +397,10 @@ fn exec_event(event: &BotEvent) -> Result<()> {
             debug!("Executing special action '{}'", id);
             if id == "drop_inventory" {
                 drop_inventory().context("Failed to execute inventory drop action")?;
+            } else if id == "canifis_recovery" {
+                canifis_recovery().context("Failed to execute Canifis recovery action")?;
             } else {
-                warn!("Unknown special action '{}'", id);
+                bail!("Unknown special action '{}'", id);
             }
         }
     }
