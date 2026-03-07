@@ -20,8 +20,8 @@ function run_bot() {
 }
 
 function random_wait() {
-    local min=5400  # 1.5 hours in seconds
-    local max=7200  # 2 hours in seconds
+    local min=4500  # 1 hour and 15 minutes in seconds
+    local max=5400  # 1 hour and 30 minutes in seconds
     local sleep_time=$((RANDOM % (max - min + 1) + min))
 
     echo "waiting for $((sleep_time / 60)) minutes before next run..."
