@@ -3,7 +3,7 @@ use crate::special_actions;
 
 use anyhow::{bail, Context, Result};
 use kurbo::Point;
-use log::debug;
+use log::{debug, warn};
 use serde::Deserialize;
 use std::time::Duration;
 
@@ -72,9 +72,7 @@ impl BotEvent {
                 let matches = controls::get_pixels_with_target_color(&target_bgra)?;
 
                 if matches.is_empty() {
-                    special_actions::logout()
-                        .context("Failed to execute logout sequence after color event failure")?;
-                    bail!("No matching pixels found for event '{}', logged out", id);
+                    warn!("No matching pixels found for event '{}'", id);
                 } else {
                     debug!("Found {} matching pixels for event '{}'", matches.len(), id);
                     let centroid = controls::calculate_centroid(&matches);
@@ -92,6 +90,9 @@ impl BotEvent {
                 } else if id == "canifis_recovery" {
                     special_actions::canifis_recovery()
                         .context("Failed to execute Canifis recovery action")?;
+                } else if id == "find_crab" {
+                    special_actions::find_gemstone_crab()
+                        .context("Failed to execute find gemstone crab action")?;
                 } else {
                     bail!("Unknown special action '{}'", id);
                 }

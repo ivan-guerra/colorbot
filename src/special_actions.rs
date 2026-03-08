@@ -1,7 +1,7 @@
-use crate::controls::{get_pixels_with_target_color, left_click, move_mouse};
+use crate::controls;
 use crate::event::BotEvent;
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use kurbo::Point;
 use log::debug;
 
@@ -19,8 +19,8 @@ pub fn drop_inventory() -> Result<()> {
             let y = BASE_Y + row as f64 * ROW_SPACING;
             let inventory_pos = Point::new(x, y);
 
-            move_mouse(inventory_pos)?;
-            left_click()?;
+            controls::move_mouse(inventory_pos)?;
+            controls::left_click()?;
         }
     }
     Ok(())
@@ -28,7 +28,7 @@ pub fn drop_inventory() -> Result<()> {
 
 pub fn canifis_recovery() -> Result<()> {
     let red_bgra = (0, 0, 255, 0);
-    let matches = get_pixels_with_target_color(&red_bgra)?;
+    let matches = controls::get_pixels_with_target_color(&red_bgra)?;
     if matches.is_empty() {
         debug!("No obstacle failure detected, skipping Canifis recovery");
     } else {
@@ -99,22 +99,28 @@ pub fn canifis_recovery() -> Result<()> {
     Ok(())
 }
 
-pub fn logout() -> Result<()> {
-    let logout_events = vec![
-        BotEvent::Mouse {
-            id: "logout door".to_string(),
-            pos: [806, 1011],
-            delay_rng: [3000, 3001],
-        },
-        BotEvent::Mouse {
-            id: "click here to logout".to_string(),
-            pos: [803, 958],
-            delay_rng: [3000, 3001],
-        },
-    ];
+fn hop_world() -> Result<()> {
+    let world_hop_delay_sec = std::time::Duration::from_secs(10);
 
-    for event in logout_events {
-        event.exec()?;
+    controls::press_key("ctrl+shift+Right").context("Failed to press world hop hotkey")?;
+    std::thread::sleep(world_hop_delay_sec);
+    controls::press_key("Escape").context("Failed to press Escape for world hop")?;
+
+    Ok(())
+}
+
+pub fn find_gemstone_crab() -> Result<()> {
+    let magenta_bgra = (255, 0, 255, 0);
+
+    loop {
+        let matches = controls::get_pixels_with_target_color(&magenta_bgra)?;
+
+        if matches.is_empty() {
+            debug!("No gemstone crab detected, hopping worlds");
+            hop_world()?;
+        } else {
+            break;
+        }
     }
     Ok(())
 }
