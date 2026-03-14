@@ -99,12 +99,25 @@ pub fn canifis_recovery() -> Result<()> {
     Ok(())
 }
 
+#[allow(dead_code)]
 fn hop_world() -> Result<()> {
     let world_hop_delay_sec = std::time::Duration::from_secs(10);
 
     controls::press_key("ctrl+shift+Right").context("Failed to press world hop hotkey")?;
     std::thread::sleep(world_hop_delay_sec);
     controls::press_key("Escape").context("Failed to press Escape for world hop")?;
+
+    Ok(())
+}
+
+fn enter_gemstone_cave() -> Result<()> {
+    let click_cave = BotEvent::Color {
+        id: "tile 1".to_string(),
+        rgb: [0, 0, 255],
+        delay_rng: [18000, 18500],
+    };
+
+    click_cave.exec()?;
 
     Ok(())
 }
@@ -116,8 +129,8 @@ pub fn find_gemstone_crab() -> Result<()> {
         let matches = controls::get_pixels_with_target_color(&magenta_bgra)?;
 
         if matches.is_empty() {
-            debug!("No gemstone crab detected, hopping worlds");
-            hop_world()?;
+            debug!("No gemstone crab detected, entering cave");
+            enter_gemstone_cave()?;
         } else {
             break;
         }
