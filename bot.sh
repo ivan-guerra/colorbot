@@ -23,8 +23,9 @@ function random_wait() {
     local min=4500  # 1 hour and 15 minutes in seconds
     local max=5400  # 1 hour and 30 minutes in seconds
     local sleep_time=$((RANDOM % (max - min + 1) + min))
+    wakeup_time=$(date -d "+$sleep_time seconds" "+%I:%M %p")
 
-    echo "waiting for $((sleep_time / 60)) minutes before next run..."
+    echo "waiting for $((sleep_time / 60)) minutes before next run (waking up at $wakeup_time)..."
     sleep $sleep_time
 }
 
