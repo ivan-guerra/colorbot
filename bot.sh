@@ -36,7 +36,7 @@ function main {
         # Check if current time is between 11 pm and 7 am
         current_hour=$(date +%H)
         if [ "$current_hour" -ge 23 ] || [ "$current_hour" -lt 7 ]; then
-            log_info "it's between 11 pm and 7 am, stopping the bot."
+            echo "it's between 11 pm and 7 am, stopping the bot."
             break
         fi
 
