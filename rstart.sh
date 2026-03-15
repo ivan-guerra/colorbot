@@ -42,30 +42,6 @@ function load_client() {
     # Click on the right hand side of a 1920x1080 screen on launcher
     left_click 1800 540
 
-    # Navigate to the player select drop down list using tab key
-    for _ in {1..9}; do
-        press_key Tab
-    done
-
-    # Expand the player select drop down list
-    press_key space
-
-    # Select the player based on the display number
-    if [ "$DISPLAY" = ":1" ]; then
-        # Select Antikles
-        for _ in {1..3}; do
-            press_key Up
-        done
-        # Select Antikles
-        press_key Return
-    elif [ "$DISPLAY" = ":2" ]; then
-        for _ in {1..3}; do
-            press_key Down
-        done
-        # Select Aldur07
-        press_key Return
-    fi
-
     # Press the play button
     left_click 1441 230
     delay 15
