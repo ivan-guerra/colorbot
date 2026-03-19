@@ -34,7 +34,7 @@ Options:
 `colorbot` has one required argument which is the path to a JSON file containing
 mouse events. The events fall under three categories:
 
-- **Color Events**: These events trigger the bot to search for a NPC or object
+- **Color Events**: These events trigger the bot to search for an NPC or object
   with the specified RGB color. If found, the bot will click at the center of
   the object with a randomized coordinate offset. Additionally, a random delay
   is inserted in the range specified by `delay_rng` after the click is
@@ -90,4 +90,4 @@ Checkout the [scripts/](scripts/) directory for example scripts.
 [1]: https://www.semicomplete.com/projects/xdotool/
 [2]: https://programmador.com/posts/2025/colorbot/
 [3]: https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h
-[4]: https://github.com/ivan-guerra/colorbot/blob/main/src/event.rs#L85
+[4]: https://github.com/ivan-guerra/colorbot/blob/master/src/event.rs#L85
