@@ -1,0 +1,52 @@
+[
+  {
+    "type": "color",
+    "id": "bank",
+    "rgb": [255, 0, 0],
+    "delay_rng": [1500, 1750]
+  },
+  {
+    "type": "mouse",
+    "id": "deposit all",
+    "pos": [524, 808],
+    "delay_rng": [1500, 1750]
+  },
+  {
+    "type": "mouse",
+    "id": "get bows",
+    "pos": [409, 233],
+    "delay_rng": [1000, 1500]
+  },
+  {
+    "type": "mouse",
+    "id": "get bow strings",
+    "pos": [455, 235],
+    "delay_rng": [1000, 1500]
+  },
+  {
+    "type": "keypress",
+    "id": "close bank",
+    "keycode": "Escape",
+    "delay_rng": [750, 1000],
+    "count": 1
+  },
+  {
+    "type": "mouse",
+    "id": "click bows",
+    "pos": [742, 756],
+    "delay_rng": [750, 1000]
+  },
+  {
+    "type": "mouse",
+    "id": "click bow strings",
+    "pos": [824, 864],
+    "delay_rng": [750, 1000]
+  },
+  {
+    "type": "keypress",
+    "id": "start stringing",
+    "keycode": "space",
+    "delay_rng": [17000, 17500],
+    "count": 1
+  }
+]

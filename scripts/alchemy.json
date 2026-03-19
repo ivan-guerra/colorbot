@@ -1,14 +1,14 @@
 [
   {
     "type": "mouse",
-    "id": "low level alchemy",
-    "pos": [828, 757],
+    "id": "high level alchemy",
+    "pos": [734, 805],
     "delay_rng": [1000, 1750]
   },
   {
     "type": "mouse",
     "id": "alch object",
-    "pos": [826, 752],
+    "pos": [744, 821],
     "delay_rng": [1000, 1750]
   }
 ]

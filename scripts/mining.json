@@ -1,149 +1,174 @@
-{
-  "events": [
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [52, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [31, 16, 32],
-      "delay_rng": [850, 855]
-    },
-    {
-      "id": "mine",
-      "color": [43, 44, 14],
-      "delay_rng": [1000, 1005]
-    },
-    {
-      "id": "drop",
-      "color": [0, 0, 0],
-      "delay_rng": [0, 0]
-    }
-  ]
-}
+[
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 2",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 3",
+    "rgb": [255, 0, 255],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "color",
+    "id": "mine rock 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [3000, 3100]
+  },
+  {
+    "type": "special",
+    "id": "drop_inventory"
+  }
+]
