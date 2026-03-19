@@ -1,0 +1,114 @@
+[
+  {
+    "type": "mouse",
+    "id": "obstacle 1",
+    "pos": [398, 399],
+    "delay_rng": [7500, 7750]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 2",
+    "rgb": [255, 0, 0],
+    "delay_rng": [5500, 5750]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 3",
+    "rgb": [0, 0, 255],
+    "delay_rng": [4500, 4750]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 4",
+    "rgb": [255, 0, 255],
+    "delay_rng": [6000, 6250]
+  },
+  {
+    "type": "special",
+    "id": "canifis_recovery"
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 5",
+    "rgb": [255, 0, 255],
+    "delay_rng": [6000, 6250]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 6",
+    "rgb": [247, 140, 204],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 7",
+    "rgb": [247, 140, 204],
+    "delay_rng": [7500, 7750]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "setup tile",
+    "rgb": [0, 0, 255],
+    "delay_rng": [3750, 4000]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 8",
+    "rgb": [255, 0, 0],
+    "delay_rng": [6000, 6250]
+  },
+  {
+    "type": "color",
+    "id": "mark of grace",
+    "rgb": [0, 255, 255],
+    "delay_rng": [5000, 5250]
+  },
+  {
+    "type": "color",
+    "id": "obstacle 9",
+    "rgb": [247, 140, 204],
+    "delay_rng": [5000, 5250]
+  }
+]

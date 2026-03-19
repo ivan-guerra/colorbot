@@ -1,28 +1,30 @@
-{
-  "events": [
-    {
-      "type": "mouse",
-      "action": "left_click",
-      "id": "cut tree 1",
-      "color": [255, 0, 255],
-      "delay_rng": [15000, 20000],
-      "skip_if_vanished": true
-    },
-    {
-      "type": "mouse",
-      "action": "left_click",
-      "id": "cut tree 2",
-      "color": [0, 0, 255],
-      "delay_rng": [15000, 20000],
-      "skip_if_vanished": true
-    },
-    {
-      "type": "mouse",
-      "action": "shift_click",
-      "id": "drop logs",
-      "color": [171, 32, 253],
-      "delay_rng": [500, 700],
-      "count": 27
-    }
-  ]
-}
+[
+  {
+    "type": "color",
+    "id": "cut teak 1",
+    "rgb": [0, 0, 255],
+    "delay_rng": [36000, 37000]
+  },
+  {
+    "type": "color",
+    "id": "cut teak 2",
+    "rgb": [255, 0, 255],
+    "delay_rng": [34000, 35000]
+  },
+  {
+    "type": "color",
+    "id": "cut teak 1",
+    "rgb": [0, 0, 255],
+    "delay_rng": [36000, 37000]
+  },
+  {
+    "type": "special",
+    "id": "drop_inventory"
+  },
+  {
+    "type": "color",
+    "id": "cut teak 2",
+    "rgb": [255, 0, 255],
+    "delay_rng": [34000, 35000]
+  }
+]

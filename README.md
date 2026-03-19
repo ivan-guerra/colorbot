@@ -2,7 +2,7 @@
 
 A Old School Runescape colorbot utility.
 
-### Requirements
+## Requirements
 
 `colorbot` only supports Linux. To build and run this utility, your system must
 meet the following requirements:
@@ -10,101 +10,84 @@ meet the following requirements:
 - rustc >= 1.82.0
 - [xdotool][1]
 
-### Program Usage
+> **Note**: This utility is meant to be used in conjunction with the RuneLite
+> plugins Inventory Tags, NPC Indicators, Object Markers, and Menu Entry
+> Swapper. Checkout this [blog post][2] for more information.
+
+## Program Usage
 
 `colorbot` is a command line utility. Below is the program usage:
 
 ```bash
-A OSRS color bot
-
 Usage: colorbot [OPTIONS] <SCRIPT>
 
 Arguments:
   <SCRIPT>  path to bot script
 
 Options:
-  -r, --runtime <RUNTIME>
-          script runtime in seconds [default: 3600]
-  -d, --mouse-deviation <MOUSE_DEVIATION>
-          determines the deviation of the mouse during pathing [default: 30]
-  -s, --mouse-speed <MOUSE_SPEED>
-          defines the speed of the mouse, lower means faster [default: 3]
-  -g, --debug
-          enable logging
-  -h, --help
-          Print help
-  -V, --version
-          Print version
+  -r, --runtime <RUNTIME>  script runtime in seconds [default: 3600]
+  -g, --debug              enable logging
+  -h, --help               Print help
+  -V, --version            Print version
 ```
 
 `colorbot` has one required argument which is the path to a JSON file containing
-mouse events. The event script must have the following format:
+mouse events. The events fall under three categories:
+
+- **Color Events**: These events trigger the bot to search for a NPC or object
+  with the specified RGB color. If found, the bot will click at the center of
+  the object with a randomized coordinate offset. Additionally, a random delay
+  is inserted in the range specified by `delay_rng` after the click is
+  performed.
+- **Keypress Events**: These events trigger the bot to press a specified key on
+  the keyboard. You specify keys using [X11 keycodes][3] much like when using
+  the `xdotool`. You can also specify a `count` for how many times to press that
+  key. A random delay is inserted in the range specified by `delay_rng` after
+  the keypress is performed.
+- **Mouse Events**: These events trigger the bot to click at a specified
+  coordinate. A random offset +/- 5 pixels is automatically applied to the X and
+  Y coordinates. A random delay is inserted in the range specified by
+  `delay_rng` after the click is performed.
+- **Special Events**: These events trigger the bot to perform a special action.
+  For example, the `drop_inventory` special event will drop all items in the
+  player's inventory (assuming the left click option on inventory items is
+  "Drop"). You can add special events to the
+  [`special_actions.rs`](src/special_actions.rs) module and then edit the
+  [`event.rs`][4] module to add a trigger for that event type.
+
+Below is an example of each event type:
 
 ```json
-{
-  "events": [
-    {
-      "type": "keypress",
-      "action": "F1",
-      "id": "event1",
-      "delay_rng": [10, 20]
-    },
-    {
-      "type": "mouse",
-      "action": "left_click",
-      "id": "event2",
-      "color": [1, 2, 3],
-      "delay_rng": [10, 20]
-    },
-    {
-      "type": "mouse",
-      "action": "left_click",
-      "id": "event2",
-      "color": [1, 2, 3],
-      "delay_rng": [10000, 20000],
-      "skip_if_vanished": true
-    },
-    {
-      "type": "mouse",
-      "action": "shift_click",
-      "id": "event1",
-      "color": [1, 2, 3],
-      "delay_rng": [10, 20],
-      "count": 27
-    }
-  ]
-}
+[
+  {
+    "type": "color",
+    "id": "event 1",
+    "rgb": [255, 0, 0],
+    "delay_rng": [2000, 2250]
+  },
+  {
+    "type": "mouse",
+    "id": "event 2",
+    "pos": [100, 200],
+    "delay_rng": [1500, 1750]
+  },
+  {
+    "type": "keypress",
+    "id": "event 3",
+    "keycode": "Escape",
+    "delay_rng": [750, 1000],
+    "count": 1
+  },
+  {
+    "type": "special",
+    "id": "drop_inventory"
+  }
+]
 ```
 
-The event script contains a top-level `events` array with one or more mouse
-events.
-
-- `type`: The type of event to execute, you choose between `keypress` or `mouse`
-- `action`: The type of click or keypress you want. 
-  - Mouse supports `left_click`,`right_click` and `shift_click` (shift left click) 
-  - Keypress supports `F1` to `F12`, `Escape`, and key combinations `Ctrl+Shift+Right` (does not need the color parameter)
-- `id`: A string describing the event.
-- `color`: A three element array containing the RGB color of the pixel to click
-  on. For `mouse` type only.
-- `delay_rng`: A two element array containing the minimum and maximum delay in
-  milliseconds the script will insert after the click is performed.
-- `count`: The number of repetitions you want, by default is `1` and can be ommited in the json.
-- `skip_if_vanished`: Only for `mouse` type, can be ommited, by default is set to `false`. If the target color is not present in the screen anymore, it will skip to the next event.
-
-Checkout the [scripts/](scripts/) directory for example scripts.<br>
-Note, this utility is meant to be used in conjunction with the RuneLite plugins like:<br> 
-- Inventory Tags
-- Bank Highlighter
-- NPC Indicators
-- Object Markers
-- Menu Entry Swapper
-- Canvas or Brush Markers can also be helpful
-
-I recommend in RS to `Settings -> Controls -> Enable "Shift click to drop items" and "Esc closes the interface"` <br> 
-And `Settings -> Warnings -> Confirmations -> Disable "World Switcher confirmation"` (to use along the World Hopper Plugin)
-
-Checkout this
-[blog post][2] for more information.
+Checkout the [scripts/](scripts/) directory for example scripts.
 
 [1]: https://www.semicomplete.com/projects/xdotool/
 [2]: https://programmador.com/posts/2025/colorbot/
+[3]: https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h
+[4]: https://github.com/ivan-guerra/colorbot/blob/main/src/event.rs#L85

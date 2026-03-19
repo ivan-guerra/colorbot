@@ -1,0 +1,8 @@
+[
+  {
+    "type": "color",
+    "id": "go to cave",
+    "rgb": [0, 0, 255],
+    "delay_rng": [15000, 16000]
+  }
+]

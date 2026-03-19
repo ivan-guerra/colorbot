@@ -1,25 +1,12 @@
-{
-  "events": [
-    {
-      "type": "mouse",
-      "action": "left_click",
-      "id": "lure fish",
-      "color": [255, 0, 255],
-      "delay_rng": [75000, 80000]
-    },
-    {
-      "type": "keypress",
-      "action": "F1",
-      "id": "Switch to inventory",
-      "delay_rng": [1000, 1200]
-    },
-    {
-      "type": "mouse",
-      "action": "shift_click",
-      "id": "drop fish",
-      "color": [171, 32, 253],
-      "delay_rng": [500, 700],
-      "count": 27
-    }
-  ]
-}
+[
+  {
+    "type": "color",
+    "id": "lure fish",
+    "rgb": [255, 0, 0],
+    "delay_rng": [120000, 121000]
+  },
+  {
+    "type": "special",
+    "id": "drop_inventory"
+  }
+]
