@@ -13,14 +13,26 @@ fn run_xdotool(args: &[&str]) -> Result<()> {
     Ok(())
 }
 
-fn color_matches(a: (u8, u8, u8, u8), b: (u8, u8, u8, u8), tolerance: u8) -> bool {
-    [a.0, a.1, a.2]
-        .iter()
-        .zip([b.0, b.1, b.2])
-        .all(|(x, y)| (i16::from(*x) - i16::from(y)).abs() <= i16::from(tolerance))
+#[derive(Debug)]
+pub struct PixelColor {
+    r: u8,
+    g: u8,
+    b: u8,
 }
 
-pub fn get_pixels_with_target_color(target_color: &(u8, u8, u8, u8)) -> Result<Vec<Point>> {
+impl PixelColor {
+    pub fn new(r: u8, g: u8, b: u8) -> Self {
+        Self { r, g, b }
+    }
+
+    pub fn is_match(&self, target: &PixelColor, tolerance: u8) -> bool {
+        (i16::from(self.r) - i16::from(target.r)).abs() <= i16::from(tolerance)
+            && (i16::from(self.g) - i16::from(target.g)).abs() <= i16::from(tolerance)
+            && (i16::from(self.b) - i16::from(target.b)).abs() <= i16::from(tolerance)
+    }
+}
+
+pub fn get_pixels_with_target_color(target_color: &PixelColor) -> Result<Vec<Point>> {
     // Get the primary display
     let display = Display::primary()?;
     let width = display.width();
@@ -32,14 +44,10 @@ pub fn get_pixels_with_target_color(target_color: &(u8, u8, u8, u8)) -> Result<V
         // Try to capture a frame
         if let Ok(frame) = capturer.frame() {
             // Iterate over the pixels
-            for (i, pixel) in frame.chunks(4).enumerate() {
-                // Pixels are in BGRA format
-                let b = pixel[0];
-                let g = pixel[1];
-                let r = pixel[2];
-                let a = pixel[3];
+            for (i, bgra) in frame.chunks(4).enumerate() {
+                let curr_color = PixelColor::new(bgra[2], bgra[1], bgra[0]);
 
-                if color_matches((b, g, r, a), *target_color, TOLERANCE) {
+                if curr_color.is_match(target_color, TOLERANCE) {
                     // Calculate pixel coordinates
                     let x = i % width;
                     let y = i / width;

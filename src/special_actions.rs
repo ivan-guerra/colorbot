@@ -1,7 +1,8 @@
 use crate::controls;
+use crate::controls::PixelColor;
 use crate::event::BotEvent;
-
 use crate::windmouse::Point;
+
 use anyhow::{Context, Result};
 use log::debug;
 
@@ -27,8 +28,8 @@ pub fn drop_inventory() -> Result<()> {
 }
 
 pub fn canifis_recovery() -> Result<()> {
-    let red_bgra = (0, 0, 255, 0);
-    let matches = controls::get_pixels_with_target_color(&red_bgra)?;
+    let red_pixel = PixelColor::new(255, 0, 0);
+    let matches = controls::get_pixels_with_target_color(&red_pixel)?;
     if matches.is_empty() {
         debug!("No obstacle failure detected, skipping Canifis recovery");
     } else {
@@ -123,10 +124,10 @@ fn enter_gemstone_cave() -> Result<()> {
 }
 
 pub fn find_gemstone_crab() -> Result<()> {
-    let magenta_bgra = (255, 0, 255, 0);
+    let magenta_pixel = PixelColor::new(255, 0, 255);
 
     loop {
-        let matches = controls::get_pixels_with_target_color(&magenta_bgra)?;
+        let matches = controls::get_pixels_with_target_color(&magenta_pixel)?;
 
         if matches.is_empty() {
             debug!("No gemstone crab detected, entering cave");

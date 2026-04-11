@@ -1,7 +1,8 @@
 use crate::controls;
+use crate::controls::PixelColor;
 use crate::special_actions;
-
 use crate::windmouse::Point;
+
 use anyhow::{bail, Context, Result};
 use log::{debug, warn};
 use serde::Deserialize;
@@ -68,8 +69,8 @@ impl BotEvent {
                     "Executing color event '{}': target RGB({},{},{})",
                     id, rgb[0], rgb[1], rgb[2]
                 );
-                let target_bgra = (rgb[2], rgb[1], rgb[0], 0);
-                let matches = controls::get_pixels_with_target_color(&target_bgra)?;
+                let target_pixel = PixelColor::new(rgb[0], rgb[1], rgb[2]);
+                let matches = controls::get_pixels_with_target_color(&target_pixel)?;
 
                 if matches.is_empty() {
                     warn!("No matching pixels found for event '{}'", id);
