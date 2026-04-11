@@ -13,6 +13,7 @@ use std::{
 mod controls;
 mod event;
 mod special_actions;
+mod windmouse;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]

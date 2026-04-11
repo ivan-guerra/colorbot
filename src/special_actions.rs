@@ -1,23 +1,23 @@
 use crate::controls;
 use crate::event::BotEvent;
 
+use crate::windmouse::Point;
 use anyhow::{Context, Result};
-use kurbo::Point;
 use log::debug;
 
 pub fn drop_inventory() -> Result<()> {
     const INVENTORY_ROWS: usize = 7;
     const INVENTORY_COLS: usize = 4;
-    const BASE_X: f64 = 743.0;
-    const BASE_Y: f64 = 754.0;
-    const COL_SPACING: f64 = 40.0;
-    const ROW_SPACING: f64 = 37.0;
+    const BASE_X: usize = 743;
+    const BASE_Y: usize = 754;
+    const COL_SPACING: usize = 40;
+    const ROW_SPACING: usize = 37;
 
     for row in 0..INVENTORY_ROWS {
         for col in 0..INVENTORY_COLS {
-            let x = BASE_X + col as f64 * COL_SPACING;
-            let y = BASE_Y + row as f64 * ROW_SPACING;
-            let inventory_pos = Point::new(x, y);
+            let x = BASE_X + col * COL_SPACING;
+            let y = BASE_Y + row * ROW_SPACING;
+            let inventory_pos = Point::new(i32::try_from(x)?, i32::try_from(y)?);
 
             controls::move_mouse(inventory_pos)?;
             controls::left_click()?;

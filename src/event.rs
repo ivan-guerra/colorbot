@@ -1,8 +1,8 @@
 use crate::controls;
 use crate::special_actions;
 
+use crate::windmouse::Point;
 use anyhow::{bail, Context, Result};
-use kurbo::Point;
 use log::{debug, warn};
 use serde::Deserialize;
 use std::time::Duration;
@@ -44,7 +44,7 @@ impl BotEvent {
         match &self {
             BotEvent::Mouse { id, pos, delay_rng } => {
                 debug!("Executing mouse event '{}' at ({}, {})", id, pos[0], pos[1]);
-                let point = Point::new(pos[0].into(), pos[1].into());
+                let point = Point::new(i32::try_from(pos[0])?, i32::try_from(pos[1])?);
 
                 controls::move_mouse(point)?;
                 controls::left_click()?;
