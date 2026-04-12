@@ -105,9 +105,9 @@ pub fn canifis_recovery() -> Result<()> {
 fn hop_world() -> Result<()> {
     let world_hop_delay_sec = std::time::Duration::from_secs(10);
 
-    controls::press_key("ctrl+shift+Right").context("Failed to press world hop hotkey")?;
+    controls::toggle_key("ctrl+shift+Right").context("Failed to press world hop hotkey")?;
     std::thread::sleep(world_hop_delay_sec);
-    controls::press_key("Escape").context("Failed to press Escape for world hop")?;
+    controls::toggle_key("Escape").context("Failed to press Escape for world hop")?;
 
     Ok(())
 }

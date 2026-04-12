@@ -43,7 +43,7 @@ pub fn left_click() -> Result<()> {
     Ok(())
 }
 
-pub fn press_key(keycode: &str) -> Result<()> {
+pub fn toggle_key(keycode: &str) -> Result<()> {
     const KEY_DELAY_RNG_MS: std::ops::RangeInclusive<u64> = 100..=150;
 
     run_xdotool(&["key", keycode])

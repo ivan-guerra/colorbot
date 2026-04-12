@@ -60,7 +60,7 @@ impl BotEvent {
                 debug!("Executing keypress '{}': '{}' x{}", id, keycode, count);
 
                 for _ in 0..*count {
-                    controls::press_key(keycode)?;
+                    controls::toggle_key(keycode)?;
                 }
                 sleep_random_delay(delay_rng);
             }
