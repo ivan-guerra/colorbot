@@ -47,7 +47,7 @@ impl BotEvent {
                 debug!("Executing mouse event '{}' at ({}, {})", id, pos[0], pos[1]);
                 let point = Point::new(i32::try_from(pos[0])?, i32::try_from(pos[1])?);
 
-                controls::move_mouse(point)?;
+                controls::move_mouse_with_rand(point)?;
                 controls::left_click()?;
                 sleep_random_delay(delay_rng);
             }

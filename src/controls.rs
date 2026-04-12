@@ -38,6 +38,17 @@ pub fn move_mouse(target: Point) -> Result<()> {
     Ok(())
 }
 
+pub fn move_mouse_with_rand(target: Point) -> Result<()> {
+    const TARGET_OFFSET_RNG: std::ops::RangeInclusive<i32> = -5..=5;
+
+    let randomized_target = Point::new(
+        target.x + rand::random_range(TARGET_OFFSET_RNG),
+        target.y + rand::random_range(TARGET_OFFSET_RNG),
+    );
+
+    move_mouse(randomized_target)
+}
+
 pub fn left_click() -> Result<()> {
     run_xdotool(&["click", "1"]).context("Failed to execute xdotool for left click")?;
     Ok(())

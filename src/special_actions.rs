@@ -1,6 +1,5 @@
 use crate::event::BotEvent;
 use crate::geometry::PixelColor;
-use crate::windmouse::Point;
 use crate::{controls, geometry};
 
 use anyhow::{Context, Result};
@@ -9,18 +8,17 @@ use log::debug;
 pub fn drop_inventory() -> Result<()> {
     const INVENTORY_ROWS: usize = 7;
     const INVENTORY_COLS: usize = 4;
-    const BASE_X: usize = 743;
-    const BASE_Y: usize = 754;
-    const COL_SPACING: usize = 40;
-    const ROW_SPACING: usize = 37;
 
-    for row in 0..INVENTORY_ROWS {
-        for col in 0..INVENTORY_COLS {
-            let x = BASE_X + col * COL_SPACING;
-            let y = BASE_Y + row * ROW_SPACING;
-            let inventory_pos = Point::new(i32::try_from(x)?, i32::try_from(y)?);
+    let cyan_pixel = PixelColor::new(0, 255, 255);
 
-            controls::move_mouse(inventory_pos)?;
+    // Pass through twice to make sure we drop all items as the algorithm sometimes misses items on
+    // the first pass
+    for _ in 0..2 * INVENTORY_ROWS * INVENTORY_COLS {
+        let inventory_pos = geometry::find_color(&cyan_pixel)
+            .context("Failed to run drop inventory color check")?;
+
+        if let Some(pos) = inventory_pos {
+            controls::move_mouse(pos)?;
             controls::left_click()?;
         }
     }
@@ -29,10 +27,10 @@ pub fn drop_inventory() -> Result<()> {
 
 pub fn canifis_recovery() -> Result<()> {
     let red_pixel = PixelColor::new(255, 0, 0);
-    let detected_failure = geometry::color_exists_on_screen(&red_pixel)
-        .context("Failed to run canifis recovery color check")?;
+    let detected_failure =
+        geometry::find_color(&red_pixel).context("Failed to run canifis recovery color check")?;
 
-    if detected_failure {
+    if detected_failure.is_some() {
         debug!("Detected obstacle failure, executing Canifis recovery");
 
         let canifis_recovery_events = vec![
@@ -128,9 +126,9 @@ pub fn find_gemstone_crab() -> Result<()> {
     let magenta_pixel = PixelColor::new(255, 0, 255);
 
     loop {
-        let detected_crab = geometry::color_exists_on_screen(&magenta_pixel)?;
+        let detected_crab = geometry::find_color(&magenta_pixel)?;
 
-        if detected_crab {
+        if detected_crab.is_some() {
             break;
         } else {
             debug!("No gemstone crab detected, entering cave");

@@ -1,5 +1,6 @@
 use crate::windmouse::Point;
 use anyhow::{bail, Context, Result};
+use rand::seq::IndexedRandom;
 use scrap::{Capturer, Display};
 
 #[derive(Debug)]
@@ -174,10 +175,11 @@ fn get_pixels_with_target_color(target_color: &PixelColor) -> Result<Vec<Point>>
     Ok(matches)
 }
 
-pub fn color_exists_on_screen(target_color: &PixelColor) -> Result<bool> {
+pub fn find_color(target_color: &PixelColor) -> Result<Option<Point>> {
     let matches = get_pixels_with_target_color(target_color)?;
+    let mut rng = rand::rng(); // Initialize RNG
 
-    Ok(!matches.is_empty())
+    Ok(matches.choose(&mut rng).copied())
 }
 
 pub fn find_point_in_shape(target_color: &PixelColor) -> Result<Point> {
