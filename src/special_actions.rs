@@ -1,7 +1,7 @@
-use crate::controls;
-use crate::controls::PixelColor;
 use crate::event::BotEvent;
+use crate::geometry::PixelColor;
 use crate::windmouse::Point;
+use crate::{controls, geometry};
 
 use anyhow::{Context, Result};
 use log::debug;
@@ -29,14 +29,12 @@ pub fn drop_inventory() -> Result<()> {
 
 pub fn canifis_recovery() -> Result<()> {
     let red_pixel = PixelColor::new(255, 0, 0);
-    let matches = controls::get_pixels_with_target_color(&red_pixel)?;
-    if matches.is_empty() {
-        debug!("No obstacle failure detected, skipping Canifis recovery");
-    } else {
-        debug!(
-            "Detected obstacle failure with {} matching pixels, executing Canifis recovery",
-            matches.len()
-        );
+    let detected_failure = geometry::color_exists_on_screen(&red_pixel)
+        .context("Failed to run canifis recovery color check")?;
+
+    if detected_failure {
+        debug!("Detected obstacle failure, executing Canifis recovery");
+
         let canifis_recovery_events = vec![
             BotEvent::Color {
                 id: "tile 1".to_string(),
@@ -96,7 +94,10 @@ pub fn canifis_recovery() -> Result<()> {
         for event in canifis_recovery_events {
             event.exec()?;
         }
+    } else {
+        debug!("No obstacle failure detected, skipping Canifis recovery");
     }
+
     Ok(())
 }
 
@@ -127,13 +128,13 @@ pub fn find_gemstone_crab() -> Result<()> {
     let magenta_pixel = PixelColor::new(255, 0, 255);
 
     loop {
-        let matches = controls::get_pixels_with_target_color(&magenta_pixel)?;
+        let detected_crab = geometry::color_exists_on_screen(&magenta_pixel)?;
 
-        if matches.is_empty() {
+        if detected_crab {
+            break;
+        } else {
             debug!("No gemstone crab detected, entering cave");
             enter_gemstone_cave()?;
-        } else {
-            break;
         }
     }
     Ok(())

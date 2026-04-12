@@ -12,6 +12,7 @@ use std::{
 
 mod controls;
 mod event;
+mod geometry;
 mod special_actions;
 mod windmouse;
 

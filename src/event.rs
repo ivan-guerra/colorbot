@@ -1,10 +1,10 @@
-use crate::controls;
-use crate::controls::PixelColor;
+use crate::geometry::PixelColor;
 use crate::special_actions;
 use crate::windmouse::Point;
+use crate::{controls, geometry};
 
 use anyhow::{bail, Context, Result};
-use log::{debug, warn};
+use log::debug;
 use serde::Deserialize;
 use std::time::Duration;
 
@@ -69,19 +69,13 @@ impl BotEvent {
                     "Executing color event '{}': target RGB({},{},{})",
                     id, rgb[0], rgb[1], rgb[2]
                 );
-                let target_pixel = PixelColor::new(rgb[0], rgb[1], rgb[2]);
-                let matches = controls::get_pixels_with_target_color(&target_pixel)?;
+                let target_color = PixelColor::new(rgb[0], rgb[1], rgb[2]);
+                let target_pixel = geometry::find_point_in_shape(&target_color)
+                    .context("Failed to find target pixel color")?;
 
-                if matches.is_empty() {
-                    warn!("No matching pixels found for event '{}'", id);
-                } else {
-                    debug!("Found {} matching pixels for event '{}'", matches.len(), id);
-                    let centroid = controls::calculate_centroid(&matches);
-
-                    controls::move_mouse(centroid)?;
-                    controls::left_click()?;
-                    sleep_random_delay(delay_rng);
-                }
+                controls::move_mouse(target_pixel)?;
+                controls::left_click()?;
+                sleep_random_delay(delay_rng);
             }
             BotEvent::SpecialAction { id } => {
                 debug!("Executing special action '{}'", id);
