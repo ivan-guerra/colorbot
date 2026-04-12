@@ -32,13 +32,13 @@ Options:
 ```
 
 `colorbot` has one required argument which is the path to a JSON file containing
-mouse events. The events fall under three categories:
+bot events. The events fall under four categories:
 
 - **Color Events**: These events trigger the bot to search for an NPC or object
-  with the specified RGB color. If found, the bot will click at the center of
-  the object with a randomized coordinate offset. Additionally, a random delay
-  is inserted in the range specified by `delay_rng` after the click is
-  performed.
+  with the specified RGB color. If found, the bot will click at a point inside
+  the convex hull formed by matching pixels, biased away from edges for more
+  natural targeting. Additionally, a random delay is inserted in the range
+  specified by `delay_rng` after the click is performed.
 - **Keypress Events**: These events trigger the bot to press a specified key on
   the keyboard. You specify keys using [X11 keycodes][3] much like when using
   the `xdotool`. You can also specify a `count` for how many times to press that
@@ -46,14 +46,18 @@ mouse events. The events fall under three categories:
   the keypress is performed.
 - **Mouse Events**: These events trigger the bot to click at a specified
   coordinate. A random offset +/- 5 pixels is automatically applied to the X and
-  Y coordinates. A random delay is inserted in the range specified by
-  `delay_rng` after the click is performed.
+  Y coordinates. Mouse movement uses the WindMouse algorithm to simulate
+  human-like cursor paths with gravity, wind forces, and velocity constraints. A
+  random delay is inserted in the range specified by `delay_rng` after the click
+  is performed.
 - **Special Events**: These events trigger the bot to perform a special action.
   For example, the `drop_inventory` special event will drop all items in the
   player's inventory (assuming the left click option on inventory items is
-  "Drop"). You can add special events to the
-  [`special_actions.rs`](src/special_actions.rs) module and then edit the
-  [`event.rs`][4] module to add a trigger for that event type.
+  "Drop"). Other special actions include `canifis_recovery` for handling
+  obstacle course failures and `find_crab` for locating the gemstone crab. You
+  can add special events to the [`special_actions.rs`](src/special_actions.rs)
+  module and then edit the [`event.rs`](src/event.rs) module to add a trigger
+  for that event type.
 
 Below is an example of each event type:
 
@@ -90,4 +94,3 @@ Checkout the [scripts/](scripts/) directory for example scripts.
 [1]: https://www.semicomplete.com/projects/xdotool/
 [2]: https://programmador.com/posts/2025/colorbot/
 [3]: https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h
-[4]: https://github.com/ivan-guerra/colorbot/blob/master/src/event.rs#L85

@@ -1,3 +1,8 @@
+//! Game-specific automation sequences and recovery actions.
+//!
+//! This module implements specialized bot behaviors such as inventory management,
+//! obstacle course recovery sequences, and world hopping for specific game scenarios.
+
 use crate::event::BotEvent;
 use crate::geometry::PixelColor;
 use crate::{controls, geometry};
@@ -5,6 +10,7 @@ use crate::{controls, geometry};
 use anyhow::{Context, Result};
 use log::debug;
 
+/// Drops all items in the inventory by clicking on cyan-colored pixels.
 pub fn drop_inventory() -> Result<()> {
     const INVENTORY_ROWS: usize = 7;
     const INVENTORY_COLS: usize = 4;
@@ -25,6 +31,7 @@ pub fn drop_inventory() -> Result<()> {
     Ok(())
 }
 
+/// Recovers from obstacle failure in Canifis rooftop course.
 pub fn canifis_recovery() -> Result<()> {
     let red_pixel = PixelColor::new(255, 0, 0);
     let detected_failure =
@@ -99,6 +106,7 @@ pub fn canifis_recovery() -> Result<()> {
     Ok(())
 }
 
+/// Switches to the next world using hotkeys.
 #[allow(dead_code)]
 fn hop_world() -> Result<()> {
     let world_hop_delay_sec = std::time::Duration::from_secs(10);
@@ -110,6 +118,7 @@ fn hop_world() -> Result<()> {
     Ok(())
 }
 
+/// Clicks on the cave entrance and waits for entry animation.
 fn enter_gemstone_cave() -> Result<()> {
     let click_cave = BotEvent::Color {
         id: "tile 1".to_string(),
@@ -122,6 +131,7 @@ fn enter_gemstone_cave() -> Result<()> {
     Ok(())
 }
 
+/// Continuously enters the cave until the gemstone crab is detected.
 pub fn find_gemstone_crab() -> Result<()> {
     let magenta_pixel = PixelColor::new(255, 0, 255);
 

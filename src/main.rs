@@ -1,3 +1,7 @@
+//! Colorbot: A scriptable Old School Runescape automation bot.
+//!
+//! This bot reads JSON event scripts and executes them in a loop for a specified duration,
+//! supporting mouse movements, keypresses, color-based pixel detection, and custom actions.
 use crate::event::BotEvent;
 
 use anyhow::{Context, Result};
@@ -16,12 +20,15 @@ mod geometry;
 mod special_actions;
 mod windmouse;
 
+/// Command-line configuration for the bot runtime and script.
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct BotConfig {
+    /// Path to the JSON bot script file containing event sequences.
     #[arg(help = "path to bot script")]
     script: std::path::PathBuf,
 
+    /// Duration in seconds for the bot to run before stopping.
     #[arg(
         short = 'r',
         long,
@@ -30,10 +37,12 @@ struct BotConfig {
     )]
     runtime: u64,
 
+    /// Enable debug logging output to terminal.
     #[arg(short = 'g', long, default_value_t = false, help = "enable logging")]
     debug: bool,
 }
 
+/// Reads and parses a bot script from a JSON file.
 fn read_bot_script(path: &Path) -> Result<Vec<BotEvent>> {
     let file = File::open(path).context("Failed to open bot script")?;
     let reader = BufReader::new(file);
@@ -43,6 +52,7 @@ fn read_bot_script(path: &Path) -> Result<Vec<BotEvent>> {
     Ok(events)
 }
 
+/// Executes the bot event loop repeatedly until the specified runtime expires.
 fn run_event_loop(config: &BotConfig) -> Result<()> {
     let events = read_bot_script(&config.script)?;
     debug!("Loaded {} events from script", events.len());
@@ -66,6 +76,7 @@ fn run_event_loop(config: &BotConfig) -> Result<()> {
     Ok(())
 }
 
+/// Entry point that parses arguments, initializes logging, and runs the bot.
 fn main() -> Result<()> {
     let config = BotConfig::parse();
 

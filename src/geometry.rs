@@ -1,8 +1,13 @@
+//! Geometric algorithms and color-based pixel detection for screen automation.
+//!
+//! This module provides functions for finding pixels by color, computing convex hulls,
+//! point-in-polygon tests, and selecting points within colored shapes with edge distance bias.
 use crate::windmouse::Point;
 use anyhow::{bail, Context, Result};
 use rand::seq::IndexedRandom;
 use scrap::{Capturer, Display};
 
+/// RGB color representation for pixel matching
 #[derive(Debug)]
 pub struct PixelColor {
     r: u8,
@@ -11,10 +16,12 @@ pub struct PixelColor {
 }
 
 impl PixelColor {
+    /// Creates a new PixelColor with the given RGB values.
     pub fn new(r: u8, g: u8, b: u8) -> Self {
         Self { r, g, b }
     }
 
+    /// Checks if this color matches the target color within the given tolerance.
     pub fn is_match(&self, target: &PixelColor, tolerance: u8) -> bool {
         (i16::from(self.r) - i16::from(target.r)).abs() <= i16::from(tolerance)
             && (i16::from(self.g) - i16::from(target.g)).abs() <= i16::from(tolerance)
@@ -22,7 +29,7 @@ impl PixelColor {
     }
 }
 
-/// Calculate minimum distance from a point to any edge of the polygon
+/// Calculates minimum distance from a point to any edge of the polygon.
 fn min_distance_to_edges(point: &Point, polygon: &[Point]) -> f64 {
     let n = polygon.len();
     let mut min_dist = f64::MAX;
@@ -36,7 +43,7 @@ fn min_distance_to_edges(point: &Point, polygon: &[Point]) -> f64 {
     min_dist
 }
 
-/// Calculate distance from a point to a line segment
+/// Calculates distance from a point to a line segment.
 fn point_to_line_segment_distance(point: &Point, a: &Point, b: &Point) -> f64 {
     let px = f64::from(point.x);
     let py = f64::from(point.y);
@@ -64,7 +71,7 @@ fn point_to_line_segment_distance(point: &Point, a: &Point, b: &Point) -> f64 {
     ((px - closest_x).powi(2) + (py - closest_y).powi(2)).sqrt()
 }
 
-/// Ray casting algorithm for point-in-polygon test
+/// Determines if a point is inside a polygon using ray casting algorithm.
 fn point_in_polygon(point: &Point, polygon: &[Point]) -> bool {
     let mut inside = false;
     let n = polygon.len();
@@ -85,7 +92,8 @@ fn point_in_polygon(point: &Point, polygon: &[Point]) -> bool {
     inside
 }
 
-/// Graham scan algorithm to compute convex hull
+/// Computes the convex hull of a set of points using
+/// [Graham scan](https://en.wikipedia.org/wiki/Graham_scan) algorithm.
 fn convex_hull(points: &[Point]) -> Vec<Point> {
     if points.len() < 3 {
         return points.to_vec();
@@ -137,16 +145,19 @@ fn convex_hull(points: &[Point]) -> Vec<Point> {
     hull
 }
 
+/// Calculates the cross product of vectors OA and OB.
 fn cross_product(o: &Point, a: &Point, b: &Point) -> i32 {
     (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x)
 }
 
+/// Calculates the squared Euclidean distance between two points.
 fn distance_squared(a: &Point, b: &Point) -> i32 {
     let dx = a.x - b.x;
     let dy = a.y - b.y;
     dx * dx + dy * dy
 }
 
+/// Captures screen and returns all pixels matching the target color within tolerance.
 fn get_pixels_with_target_color(target_color: &PixelColor) -> Result<Vec<Point>> {
     // Get the primary display
     let display = Display::primary()?;
@@ -175,13 +186,15 @@ fn get_pixels_with_target_color(target_color: &PixelColor) -> Result<Vec<Point>>
     Ok(matches)
 }
 
+/// Finds and returns a random pixel position matching the target color, if any exist.
 pub fn find_color(target_color: &PixelColor) -> Result<Option<Point>> {
     let matches = get_pixels_with_target_color(target_color)?;
-    let mut rng = rand::rng(); // Initialize RNG
+    let mut rng = rand::rng();
 
     Ok(matches.choose(&mut rng).copied())
 }
 
+/// Finds a point inside the shape formed by pixels matching the target color, biased away from edges.
 pub fn find_point_in_shape(target_color: &PixelColor) -> Result<Point> {
     let boundary_points = get_pixels_with_target_color(target_color)?;
 

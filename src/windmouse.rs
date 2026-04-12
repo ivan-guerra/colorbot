@@ -1,3 +1,9 @@
+//! Human-like mouse movement using the WindMouse algorithm.
+//!
+//! This module implements the WindMouse algorithm for generating realistic cursor paths
+//! with gravity, wind forces, and velocity constraints to simulate natural mouse movement.
+//! Credit to Ben Land for the [original algorithm](https://ben.land/post/2021/04/25/windmouse-human-mouse-movement/).
+//! This is a Rust implementation of the code found in Ben's blog post.
 use anyhow::{Context, Result};
 use enigo::{Coordinate, Enigo, Mouse, Settings};
 use std::fmt::Display;
@@ -11,10 +17,12 @@ pub struct Point {
 }
 
 impl Point {
+    /// Creates a new Point with the given coordinates.
     pub fn new(x: i32, y: i32) -> Self {
         Self { x, y }
     }
 
+    /// Calculates the Euclidean distance to another point.
     fn distance_to(&self, other: &Point) -> f64 {
         f64::hypot(f64::from(other.x - self.x), f64::from(other.y - self.y))
     }
@@ -40,6 +48,7 @@ pub struct WindMouseParams {
 }
 
 impl WindMouseParams {
+    /// Creates new parameters with randomized values for natural mouse movement.
     fn new() -> Self {
         // Constants used here were taken from DreamBot source code
         // https://dreambot.org/forums/index.php?/topic/21147-windmouse-custom-mouse-movement-algorithm/
@@ -65,7 +74,7 @@ pub struct WindMouse {
 impl WindMouse {
     const MOUSE_POLL_INTERVAL_MS: Duration = Duration::from_millis(8);
 
-    /// Moves mouse cursor from start to destination using wind mouse algorithm
+    /// Moves mouse cursor from start to destination using wind mouse algorithm.
     fn wind_mouse(&mut self, start: Point, dest: Point, params: WindMouseParams) -> Result<()> {
         let sqrt3 = 3.0_f64.sqrt();
         let sqrt5 = 5.0_f64.sqrt();
@@ -141,12 +150,14 @@ impl WindMouse {
         Ok(())
     }
 
+    /// Creates a new WindMouse instance with initialized Enigo controller.
     pub fn new() -> Result<Self> {
         let enigo = Enigo::new(&Settings::default()).context("failed to init enigo")?;
 
         Ok(Self { enigo })
     }
 
+    /// Moves the mouse cursor from start to destination using human-like movement.
     pub fn move_to(&mut self, start: Point, dest: Point) -> Result<()> {
         let params = WindMouseParams::new();
 

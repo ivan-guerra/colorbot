@@ -1,3 +1,7 @@
+//! Bot event types and execution logic.
+//!
+//! This module defines the core event types (mouse clicks, keypresses, color detection, and special actions)
+//! that can be deserialized from bot scripts and executed with randomized delays for human-like automation.
 use crate::geometry::PixelColor;
 use crate::special_actions;
 use crate::windmouse::Point;
@@ -8,34 +12,54 @@ use log::debug;
 use serde::Deserialize;
 use std::time::Duration;
 
+/// Represents different types of bot events that can be executed.
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
 pub enum BotEvent {
+    /// Mouse click event at a specific screen position.
     #[serde(rename = "mouse")]
     Mouse {
+        /// Event identifier for logging.
         id: String,
+        /// Target screen coordinates [x, y].
         pos: [u32; 2],
+        /// Delay range in milliseconds [min, max] after execution.
         delay_rng: [u32; 2],
     },
+    /// Keyboard key press event.
     #[serde(rename = "keypress")]
     KeyPress {
+        /// Event identifier for logging.
         id: String,
+        /// Key to press (xdotool format).
         keycode: String,
+        /// Delay range in milliseconds [min, max] after execution.
         delay_rng: [u32; 2],
+        /// Number of times to press the key.
         count: u32,
     },
+    /// Color-based pixel detection and click event.
     #[serde(rename = "color")]
     Color {
+        /// Event identifier for logging.
         id: String,
+        /// Target RGB color values [r, g, b].
         rgb: [u8; 3],
+        /// Delay range in milliseconds [min, max] after execution.
         delay_rng: [u32; 2],
     },
+    /// Special predefined action sequence.
     #[serde(rename = "special")]
-    SpecialAction { id: String },
+    SpecialAction {
+        /// Action identifier (e.g., "drop_inventory", "canifis_recovery").
+        id: String,
+    },
 }
 
 impl BotEvent {
+    /// Executes the bot event based on its type.
     pub fn exec(&self) -> Result<()> {
+        // Sleeps for a random duration within the specified range.
         let sleep_random_delay = |delay_rng: &[u32; 2]| {
             let delay = rand::random_range(delay_rng[0]..=delay_rng[1]);
             debug!("Sleeping for {} ms", delay);
