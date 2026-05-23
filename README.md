@@ -39,25 +39,22 @@ bot events. The events fall under four categories:
   the convex hull formed by matching pixels, biased away from edges for more
   natural targeting. Additionally, a random delay is inserted in the range
   specified by `delay_rng` after the click is performed.
+- **Image Events**: These events trigger the bot to search for a template image
+  on the screen using template matching. If found, the bot will click at a
+  random point within the matched region. A random delay is inserted in the
+  range specified by `delay_rng` after the click is performed.
 - **Keypress Events**: These events trigger the bot to press a specified key on
   the keyboard. You specify keys using [X11 keycodes][3] much like when using
   the `xdotool`. You can also specify a `count` for how many times to press that
   key. A random delay is inserted in the range specified by `delay_rng` after
   the keypress is performed.
-- **Mouse Events**: These events trigger the bot to click at a specified
-  coordinate. A random offset +/- 5 pixels is automatically applied to the X and
-  Y coordinates. Mouse movement uses the WindMouse algorithm to simulate
-  human-like cursor paths with gravity, wind forces, and velocity constraints. A
-  random delay is inserted in the range specified by `delay_rng` after the click
-  is performed.
 - **Special Events**: These events trigger the bot to perform a special action.
   For example, the `drop_inventory` special event will drop all items in the
   player's inventory (assuming the left click option on inventory items is
-  "Drop"). Other special actions include `canifis_recovery` for handling
-  obstacle course failures and `find_crab` for locating the gemstone crab. You
-  can add special events to the [`special_actions.rs`](src/special_actions.rs)
-  module and then edit the [`event.rs`](src/event.rs) module to add a trigger
-  for that event type.
+  "Drop"). Other special actions include `find_crab` for locating the gemstone
+  crab. You can add special events to the
+  [`special_actions.rs`](src/special_actions.rs) module and then edit the
+  [`event.rs`](src/event.rs) module to add a trigger for that event type.
 
 Below is an example of each event type:
 
@@ -70,9 +67,9 @@ Below is an example of each event type:
     "delay_rng": [2000, 2250]
   },
   {
-    "type": "mouse",
+    "type": "image",
     "id": "event 2",
-    "pos": [100, 200],
+    "image_path": "/path/to/template.png",
     "delay_rng": [1500, 1750]
   },
   {
