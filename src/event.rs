@@ -4,7 +4,6 @@
 //! that can be deserialized from bot scripts and executed with randomized delays for human-like automation.
 use crate::special_actions;
 use crate::vision::PixelColor;
-use crate::windmouse::Point;
 use crate::{controls, vision};
 
 use anyhow::{bail, Context, Result};
@@ -17,16 +16,6 @@ use std::time::Duration;
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
 pub enum BotEvent {
-    /// Mouse click event at a specific screen position.
-    #[serde(rename = "mouse")]
-    Mouse {
-        /// Event identifier for logging.
-        id: String,
-        /// Target screen coordinates [x, y].
-        pos: [u32; 2],
-        /// Delay range in milliseconds [min, max] after execution.
-        delay_rng: [u32; 2],
-    },
     /// Keyboard key press event.
     #[serde(rename = "keypress")]
     KeyPress {
@@ -77,14 +66,6 @@ impl BotEvent {
         };
 
         match &self {
-            BotEvent::Mouse { id, pos, delay_rng } => {
-                debug!("Executing mouse event '{}' at ({}, {})", id, pos[0], pos[1]);
-                let point = Point::new(i32::try_from(pos[0])?, i32::try_from(pos[1])?);
-
-                controls::move_mouse_with_rand(point)?;
-                controls::left_click()?;
-                sleep_random_delay(delay_rng);
-            }
             BotEvent::KeyPress {
                 id,
                 keycode,
@@ -132,9 +113,6 @@ impl BotEvent {
                 if id == "drop_inventory" {
                     special_actions::drop_inventory()
                         .context("Failed to execute inventory drop action")?;
-                } else if id == "canifis_recovery" {
-                    special_actions::canifis_recovery()
-                        .context("Failed to execute Canifis recovery action")?;
                 } else if id == "find_crab" {
                     special_actions::find_gemstone_crab()
                         .context("Failed to execute find gemstone crab action")?;
