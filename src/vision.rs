@@ -4,7 +4,7 @@
 //! point-in-polygon tests, and selecting points within colored shapes with edge distance bias.
 use crate::windmouse::Point;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{bail, ensure, Context, Result};
 use image::ImageReader;
 use image::{GrayImage, ImageBuffer, Rgba};
 use imageproc::template_matching::{find_extremes, MatchTemplateMethod};
@@ -203,13 +203,14 @@ pub fn find_color(target_color: &PixelColor) -> Result<Option<Point>> {
 pub fn find_point_in_shape(target_color: &PixelColor) -> Result<Point> {
     let boundary_points = get_pixels_with_target_color(target_color)?;
 
-    if boundary_points.is_empty() {
-        bail!("No pixels found matching the target color");
-    }
-
-    if boundary_points.len() == 1 {
-        bail!("Only one pixel found matching the target color, cannot determine shape");
-    }
+    ensure!(
+        !boundary_points.is_empty(),
+        "No pixels found matching the target color"
+    );
+    ensure!(
+        boundary_points.len() > 1,
+        "Only one pixel found matching the target color, cannot determine shape"
+    );
 
     // Find bounding box
     let min_x = boundary_points.iter().map(|p| p.x).min().unwrap();
@@ -220,10 +221,10 @@ pub fn find_point_in_shape(target_color: &PixelColor) -> Result<Point> {
     // Create convex hull from boundary points to form a proper polygon
     let polygon = convex_hull(&boundary_points);
 
-    if polygon.len() < 3 {
-        // Not enough points to form a polygon
-        bail!("Not enough distinct pixels to form a polygon");
-    }
+    ensure!(
+        polygon.len() >= 3,
+        "Convex hull of boundary points has less than 3 vertices, cannot form a polygon"
+    );
 
     // Try to find a random point inside the polygon, biased away from edges
     const MAX_ATTEMPTS: u32 = 1000;
