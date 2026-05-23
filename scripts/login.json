@@ -1,0 +1,14 @@
+[
+  {
+    "type": "image",
+    "id": "Play Now",
+    "image_path": "/home/ieg/dev/colorbot/templates/play_now.png",
+    "delay_rng": [10000, 10001]
+  },
+  {
+    "type": "image",
+    "id": "Click Here to Play",
+    "image_path": "/home/ieg/dev/colorbot/templates/click_here_to_play.png",
+    "delay_rng": [10000, 10001]
+  }
+]
