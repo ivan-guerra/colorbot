@@ -10,27 +10,6 @@ use crate::{controls, vision};
 use anyhow::{Context, Result};
 use log::debug;
 
-/// Drops all items in the inventory by clicking on cyan-colored pixels.
-pub fn drop_inventory() -> Result<()> {
-    const INVENTORY_ROWS: usize = 7;
-    const INVENTORY_COLS: usize = 4;
-
-    let cyan_pixel = PixelColor::new(0, 255, 255);
-
-    // Pass through twice to make sure we drop all items as the algorithm sometimes misses items on
-    // the first pass
-    for _ in 0..2 * INVENTORY_ROWS * INVENTORY_COLS {
-        let inventory_pos =
-            vision::find_color(&cyan_pixel).context("Failed to run drop inventory color check")?;
-
-        if let Some(pos) = inventory_pos {
-            controls::move_mouse(pos)?;
-            controls::left_click()?;
-        }
-    }
-    Ok(())
-}
-
 /// Switches to the next world using hotkeys.
 #[allow(dead_code)]
 fn hop_world() -> Result<()> {

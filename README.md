@@ -49,10 +49,8 @@ bot events. The events fall under four categories:
   key. A random delay is inserted in the range specified by `delay_rng` after
   the keypress is performed.
 - **Special Events**: These events trigger the bot to perform a special action.
-  For example, the `drop_inventory` special event will drop all items in the
-  player's inventory (assuming the left click option on inventory items is
-  "Drop"). Other special actions include `find_crab` for locating the gemstone
-  crab. You can add special events to the
+  For example, the `hop_world` special event will hop to the next world using
+  the world hopping hotkeys. You can add special events to the
   [`special_actions.rs`](src/special_actions.rs) module and then edit the
   [`event.rs`](src/event.rs) module to add a trigger for that event type.
 

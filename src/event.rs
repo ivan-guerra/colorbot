@@ -110,10 +110,7 @@ impl BotEvent {
             }
             BotEvent::SpecialAction { id } => {
                 debug!("Executing special action '{}'", id);
-                if id == "drop_inventory" {
-                    special_actions::drop_inventory()
-                        .context("Failed to execute inventory drop action")?;
-                } else if id == "find_crab" {
+                if id == "find_crab" {
                     special_actions::find_gemstone_crab()
                         .context("Failed to execute find gemstone crab action")?;
                 } else {
