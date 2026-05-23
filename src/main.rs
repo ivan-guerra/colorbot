@@ -16,8 +16,8 @@ use std::{
 
 mod controls;
 mod event;
-mod geometry;
 mod special_actions;
+mod vision;
 mod windmouse;
 
 /// Command-line configuration for the bot runtime and script.

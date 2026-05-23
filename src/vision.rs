@@ -3,9 +3,14 @@
 //! This module provides functions for finding pixels by color, computing convex hulls,
 //! point-in-polygon tests, and selecting points within colored shapes with edge distance bias.
 use crate::windmouse::Point;
+
 use anyhow::{bail, Context, Result};
+use image::ImageReader;
+use image::{GrayImage, ImageBuffer, Rgba};
+use imageproc::template_matching::{find_extremes, MatchTemplateMethod};
 use rand::seq::IndexedRandom;
 use scrap::{Capturer, Display};
+use std::path::Path;
 
 /// RGB color representation for pixel matching
 #[derive(Debug)]
@@ -255,6 +260,110 @@ pub fn find_point_in_shape(target_color: &PixelColor) -> Result<Point> {
         bail!(
             "Failed to find a point inside the shape after {} attempts",
             MAX_ATTEMPTS
+        );
+    }
+}
+
+/// Captures the primary display and returns it as a grayscale image.
+fn capture_screen() -> Result<GrayImage> {
+    // Initialize the display capturer for the primary monitor
+    let display =
+        Display::primary().context("Failed to identify or access the primary display monitor")?;
+
+    let mut capturer = Capturer::new(display).context(
+        "Failed to initialize system capture session. Check OS screen recording permissions.",
+    )?;
+
+    let width = capturer.width();
+    let height = capturer.height();
+
+    // Loop until a valid display frame is ready
+    let frame_buffer = loop {
+        if let Ok(frame) = capturer.frame() {
+            break frame.to_vec();
+        }
+    };
+
+    // Convert raw scrap buffer from BGRA to RGBA channels
+    let mut rgba_raw = Vec::with_capacity(frame_buffer.len());
+    for chunk in frame_buffer.chunks_exact(4) {
+        rgba_raw.push(chunk[2]); // R
+        rgba_raw.push(chunk[1]); // G
+        rgba_raw.push(chunk[0]); // B
+        rgba_raw.push(chunk[3]); // A
+    }
+
+    // Wrap raw byte buffer into an ImageBuffer container
+    let src_rgba: ImageBuffer<Rgba<u8>, Vec<u8>> =
+        ImageBuffer::from_raw(width as u32, height as u32, rgba_raw).context(
+            "Captured screen byte buffer dimensions did not match required resolution constraints",
+        )?;
+
+    // Convert to grayscale for template matching
+    Ok(image::DynamicImage::ImageRgba8(src_rgba).to_luma8())
+}
+
+/// Generates a random point within the rectangle defined by the origin and dimensions.
+fn get_rand_point_in_rect(origin: Point, width: u32, height: u32) -> Result<Point> {
+    // Generate random offsets within 0.0 (inclusive) and dimension (exclusive)
+    let random_x = i32::try_from(rand::random_range(0..width))?;
+    let random_y = i32::try_from(rand::random_range(0..height))?;
+
+    // Calculate the absolute coordinates of the point
+    let point = Point {
+        x: origin.x + random_x,
+        y: origin.y + random_y,
+    };
+
+    Ok(point)
+}
+
+/// Finds the location of the target image on the screen using template matching.
+pub fn find_image_on_screen(target_image: &Path) -> Result<Point> {
+    // Capture the screen using our separate function
+    let src = capture_screen().context("Could not extract a valid desktop screenshot frame")?;
+
+    // Load template image converted to grayscale
+    let temp_dynamic = ImageReader::open(target_image)
+        .context("Failed to locate or open 'template.png' asset from disk")?
+        .decode()
+        .context("Failed to parse and decode target 'template.png' format structure")?;
+    let temp = temp_dynamic.to_luma8();
+
+    // Run template matching
+    let result_image = imageproc::template_matching::match_template_parallel(
+        &src,
+        &temp,
+        MatchTemplateMethod::SumOfSquaredErrors,
+    );
+
+    // Find the location of the best match
+    let extremes = find_extremes(&result_image);
+    let best_match_pos = extremes.min_value_location;
+    let confidence_score = extremes.min_value;
+
+    // Dynamically calculate a confidence threshold based on template size and a variance factor
+    const MAX_PIXEL_VARIANCE: f32 = 15.0;
+    let temp_width = temp.width();
+    let temp_height = temp.height();
+    let total_pixels = (temp_width * temp_height) as f32;
+    let dynamic_threshold = total_pixels * MAX_PIXEL_VARIANCE.powi(2);
+
+    // Check if the confidence score is below the dynamic threshold to determine if a valid match
+    // was found
+    if confidence_score <= dynamic_threshold {
+        // Return a random point within the matched region to avoid clicking the exact same pixel
+        // every time
+        let origin = Point::new(
+            i32::try_from(best_match_pos.0)?,
+            i32::try_from(best_match_pos.1)?,
+        );
+        Ok(get_rand_point_in_rect(origin, temp_width, temp_height)?)
+    } else {
+        bail!(
+            "No match found for template image. Best match confidence score {} exceeded threshold {}",
+            confidence_score,
+            dynamic_threshold
         );
     }
 }

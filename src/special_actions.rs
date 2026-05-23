@@ -4,8 +4,8 @@
 //! obstacle course recovery sequences, and world hopping for specific game scenarios.
 
 use crate::event::BotEvent;
-use crate::geometry::PixelColor;
-use crate::{controls, geometry};
+use crate::vision::PixelColor;
+use crate::{controls, vision};
 
 use anyhow::{Context, Result};
 use log::debug;
@@ -20,8 +20,8 @@ pub fn drop_inventory() -> Result<()> {
     // Pass through twice to make sure we drop all items as the algorithm sometimes misses items on
     // the first pass
     for _ in 0..2 * INVENTORY_ROWS * INVENTORY_COLS {
-        let inventory_pos = geometry::find_color(&cyan_pixel)
-            .context("Failed to run drop inventory color check")?;
+        let inventory_pos =
+            vision::find_color(&cyan_pixel).context("Failed to run drop inventory color check")?;
 
         if let Some(pos) = inventory_pos {
             controls::move_mouse(pos)?;
@@ -35,7 +35,7 @@ pub fn drop_inventory() -> Result<()> {
 pub fn canifis_recovery() -> Result<()> {
     let red_pixel = PixelColor::new(255, 0, 0);
     let detected_failure =
-        geometry::find_color(&red_pixel).context("Failed to run canifis recovery color check")?;
+        vision::find_color(&red_pixel).context("Failed to run canifis recovery color check")?;
 
     if detected_failure.is_some() {
         debug!("Detected obstacle failure, executing Canifis recovery");
@@ -136,7 +136,7 @@ pub fn find_gemstone_crab() -> Result<()> {
     let magenta_pixel = PixelColor::new(255, 0, 255);
 
     loop {
-        let detected_crab = geometry::find_color(&magenta_pixel)?;
+        let detected_crab = vision::find_color(&magenta_pixel)?;
 
         if detected_crab.is_some() {
             break;

@@ -2,14 +2,15 @@
 //!
 //! This module defines the core event types (mouse clicks, keypresses, color detection, and special actions)
 //! that can be deserialized from bot scripts and executed with randomized delays for human-like automation.
-use crate::geometry::PixelColor;
 use crate::special_actions;
+use crate::vision::PixelColor;
 use crate::windmouse::Point;
-use crate::{controls, geometry};
+use crate::{controls, vision};
 
 use anyhow::{bail, Context, Result};
 use log::debug;
 use serde::Deserialize;
+use std::path::PathBuf;
 use std::time::Duration;
 
 /// Represents different types of bot events that can be executed.
@@ -45,6 +46,15 @@ pub enum BotEvent {
         id: String,
         /// Target RGB color values [r, g, b].
         rgb: [u8; 3],
+        /// Delay range in milliseconds [min, max] after execution.
+        delay_rng: [u32; 2],
+    },
+    #[serde(rename = "image")]
+    Image {
+        /// Event identifier for logging.
+        id: String,
+        /// Path to the image file to search for on the screen.
+        image_path: PathBuf,
         /// Delay range in milliseconds [min, max] after execution.
         delay_rng: [u32; 2],
     },
@@ -94,9 +104,25 @@ impl BotEvent {
                     id, rgb[0], rgb[1], rgb[2]
                 );
                 let target_color = PixelColor::new(rgb[0], rgb[1], rgb[2]);
-                let target_pixel = geometry::find_point_in_shape(&target_color)
+                let target_pixel = vision::find_point_in_shape(&target_color)
                     .context("Failed to find target pixel color")?;
 
+                controls::move_mouse(target_pixel)?;
+                controls::left_click()?;
+                sleep_random_delay(delay_rng);
+            }
+            BotEvent::Image {
+                id,
+                image_path,
+                delay_rng,
+            } => {
+                debug!(
+                    "Executing image event '{}': searching for image '{}'",
+                    id,
+                    image_path.display()
+                );
+                let target_pixel = vision::find_image_on_screen(image_path)
+                    .context("Failed to find target image on screen")?;
                 controls::move_mouse(target_pixel)?;
                 controls::left_click()?;
                 sleep_random_delay(delay_rng);
