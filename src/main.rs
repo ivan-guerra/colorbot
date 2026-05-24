@@ -2,6 +2,7 @@
 //!
 //! This bot reads JSON event scripts and executes them in a loop for a specified duration,
 //! supporting mouse movements, keypresses, color-based pixel detection, and custom actions.
+use crate::config::BotConfig;
 use crate::event::BotEvent;
 
 use anyhow::{Context, Result};
@@ -14,32 +15,12 @@ use std::{
     time::{Duration, Instant},
 };
 
+mod config;
 mod controls;
+mod delay;
 mod event;
 mod vision;
 mod windmouse;
-
-/// Command-line configuration for the bot runtime and script.
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
-struct BotConfig {
-    /// Path to the JSON bot script file containing event sequences.
-    #[arg(help = "path to bot script")]
-    script: std::path::PathBuf,
-
-    /// Duration in seconds for the bot to run before stopping.
-    #[arg(
-        short = 'r',
-        long,
-        default_value_t = 3600,
-        help = "script runtime in seconds"
-    )]
-    runtime: u64,
-
-    /// Enable debug logging output to terminal.
-    #[arg(short = 'g', long, default_value_t = false, help = "enable logging")]
-    debug: bool,
-}
 
 /// Reads and parses a bot script from a JSON file.
 fn read_bot_script(path: &Path) -> Result<Vec<BotEvent>> {
@@ -52,7 +33,7 @@ fn read_bot_script(path: &Path) -> Result<Vec<BotEvent>> {
 }
 
 /// Executes the bot event loop repeatedly until the specified runtime expires.
-fn run_event_loop(config: &BotConfig) -> Result<()> {
+fn run_event_loop(config: BotConfig) -> Result<()> {
     let events = read_bot_script(&config.script)?;
     debug!("Loaded {} events from script", events.len());
 
@@ -66,7 +47,7 @@ fn run_event_loop(config: &BotConfig) -> Result<()> {
         debug!("Starting iteration {}", iteration);
 
         for event in &events {
-            event.exec()?;
+            event.exec(&config)?;
         }
         iteration += 1;
     }
@@ -91,7 +72,7 @@ fn main() -> Result<()> {
         .context("Failed to initialize logger")?;
     }
 
-    run_event_loop(&config).context("Failed to run event loop")?;
+    run_event_loop(config).context("Failed to run event loop")?;
 
     Ok(())
 }

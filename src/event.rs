@@ -3,6 +3,8 @@
 //! This module defines the core event types (keypresses, color detection, and image template
 //! recognition) that can be deserialized from bot scripts and executed with randomized delays for
 //! human-like automation.
+use crate::config::BotConfig;
+use crate::delay::DelayModel;
 use crate::vision::PixelColor;
 use crate::{controls, vision};
 
@@ -17,12 +19,14 @@ use std::time::Duration;
 pub struct BotEvent {
     /// Event identifier for logging.
     pub id: String,
+
     /// Number of times to execute this event.
     #[serde(default = "default_count")]
     pub count: u32,
-    /// Delay range in milliseconds [min, max] after execution.
-    #[serde(default = "default_delay_rng")]
-    pub delay_rng: [u32; 2],
+
+    /// Base delay in milliseconds before executing the event.
+    pub delay: u64,
+
     /// The specific event type and its parameters.
     #[serde(flatten)]
     pub event_type: BotEventType,
@@ -30,10 +34,6 @@ pub struct BotEvent {
 
 fn default_count() -> u32 {
     1
-}
-
-fn default_delay_rng() -> [u32; 2] {
-    [0, 0]
 }
 
 /// The specific type of bot event.
@@ -61,12 +61,23 @@ pub enum BotEventType {
 
 impl BotEvent {
     /// Executes the bot event based on its type.
-    pub fn exec(&self) -> Result<()> {
-        // Sleeps for a random duration within the specified range.
-        let sleep_random_delay = |delay_rng: &[u32; 2]| {
-            let delay = rand::random_range(delay_rng[0]..=delay_rng[1]);
-            debug!("Sleeping for {} ms", delay);
-            std::thread::sleep(Duration::from_millis(delay.into()));
+    pub fn exec(&self, config: &BotConfig) -> Result<()> {
+        // Sleeps for a randomized duration based on the configured delay model
+        let sleep = |delay: u64| -> Result<()> {
+            const GAMMA_SHAPE: f64 = 1.5; // Shape that's not too clustered around the mean,
+                                          // allowing for more variability
+            let scale_ms = config.added_delay as f64 / GAMMA_SHAPE;
+            let max_delay_ms = Duration::from_millis(delay + config.max_added_delay);
+            let model = DelayModel::new(Duration::from_millis(delay))
+                .with_short_gamma(GAMMA_SHAPE, scale_ms)
+                .with_max_delay(max_delay_ms);
+            let mut rng = rand::rng();
+            let random_delay = model.next_delay(&mut rng)?;
+
+            debug!("Sleeping for {:?} before next action", random_delay);
+            std::thread::sleep(random_delay);
+
+            Ok(())
         };
 
         for i in 0..self.count {
@@ -78,7 +89,7 @@ impl BotEvent {
                 BotEventType::KeyPress { keycode } => {
                     debug!("Executing keypress '{}': '{}'", self.id, keycode);
                     controls::toggle_key(keycode)?;
-                    sleep_random_delay(&self.delay_rng);
+                    sleep(self.delay)?;
                 }
                 BotEventType::Color { rgb } => {
                     debug!(
@@ -91,7 +102,7 @@ impl BotEvent {
 
                     controls::move_mouse(target_pixel)?;
                     controls::left_click()?;
-                    sleep_random_delay(&self.delay_rng);
+                    sleep(self.delay)?;
                 }
                 BotEventType::Image { image_path } => {
                     debug!(
@@ -103,7 +114,7 @@ impl BotEvent {
                         .context("Failed to find target image on screen")?;
                     controls::move_mouse(target_pixel)?;
                     controls::left_click()?;
-                    sleep_random_delay(&self.delay_rng);
+                    sleep(self.delay)?;
                 }
             }
         }

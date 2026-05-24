@@ -3,12 +3,12 @@
     "type": "image",
     "id": "Logout Door",
     "image_path": "/home/ieg/dev/colorbot/templates/logout_door.png",
-    "delay_rng": [3000, 3001]
+    "delay": 3000
   },
   {
     "type": "image",
     "id": "Click Here to Logout",
     "image_path": "/home/ieg/dev/colorbot/templates/click_here_to_logout.png",
-    "delay_rng": [3000, 3001]
+    "delay": 3000
   }
 ]
