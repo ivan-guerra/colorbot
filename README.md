@@ -42,7 +42,7 @@ All events support these properties:
 - `type`: The event type (required) - one of: `keypress`, `color`, or `image`
 - `id`: A descriptive identifier for logging purposes (required)
 - `count`: Number of times to execute this event (optional, defaults to 1)
-- `delay_rng`: Random delay range in milliseconds `[min, max]` after execution
+- `delay`: Minimum delay in milliseconds after event execution
 
 ### Event Types
 
@@ -56,7 +56,7 @@ Simulates keyboard input using xdotool key names.
   "id": "press_escape",
   "count": 1,
   "keycode": "Escape",
-  "delay_rng": [750, 1000]
+  "delay": 750
 }
 ```
 
@@ -73,7 +73,7 @@ Finds and clicks on a specific RGB color on screen.
   "id": "click_blue_button",
   "count": 1,
   "rgb": [52, 152, 219],
-  "delay_rng": [500, 750]
+  "delay": 500
 }
 ```
 
@@ -92,7 +92,7 @@ Locates and clicks on a UI element using template matching.
   "id": "click_submit_button",
   "count": 1,
   "image_path": "templates/submit_button.png",
-  "delay_rng": [500, 1000]
+  "delay": 500
 }
 ```
 
@@ -108,26 +108,26 @@ clicks within the matched area with randomized offsets.
     "type": "keypress",
     "id": "open_menu",
     "keycode": "Escape",
-    "delay_rng": [750, 1000]
+    "delay": 750
   },
   {
     "type": "color",
     "id": "click_settings",
     "rgb": [52, 152, 219],
-    "delay_rng": [500, 750]
+    "delay": 500
   },
   {
     "type": "image",
     "id": "click_confirm",
     "image_path": "templates/confirm_button.png",
-    "delay_rng": [1000, 1500]
+    "delay": 1000
   },
   {
     "type": "keypress",
     "id": "repeat_action",
     "count": 5,
     "keycode": "space",
-    "delay_rng": [200, 300]
+    "delay": 200
   }
 ]
 ```
