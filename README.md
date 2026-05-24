@@ -9,7 +9,6 @@ automate in-game actions.
 - **Image Recognition**: Find and interact with UI elements using template
   matching
 - **Keyboard Automation**: Simulate keypress events
-- **Special Actions**: Pre-built automation sequences for common tasks
 
 ## Prerequisites
 
@@ -35,8 +34,7 @@ common properties and type-specific parameters.
 
 All events support these properties:
 
-- `type`: The event type (required) - one of: `keypress`, `color`, `image`,
-  `special`
+- `type`: The event type (required) - one of: `keypress`, `color`, or `image`
 - `id`: A descriptive identifier for logging purposes (required)
 - `count`: Number of times to execute this event (optional, defaults to 1)
 - `delay_rng`: Random delay range in milliseconds `[min, max]` after execution
@@ -96,22 +94,6 @@ Locates and clicks on a UI element using template matching.
 `image_path` is the path to the template image file (PNG format recommended).
 The bot captures the screen and searches for the template image. If found, it
 clicks within the matched area with randomized offsets.
-
-#### Special Action Event
-
-Executes pre-defined complex action sequences.
-
-```json
-{
-  "type": "special",
-  "id": "find_crab",
-  "count": 1
-}
-```
-
-Currently available special actions:
-
-- `hop_world`: Hops worlds using the World Hopper plugin hot keys.
 
 ### Example Script
 

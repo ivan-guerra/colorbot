@@ -1,13 +1,12 @@
 //! Bot event types and execution logic.
 //!
-//! This module defines the core event types (keypresses, color detection, image template
-//! recognition, and special actions) that can be deserialized from bot scripts and executed with
-//! randomized delays for human-like automation.
-use crate::special_actions;
+//! This module defines the core event types (keypresses, color detection, and image template
+//! recognition) that can be deserialized from bot scripts and executed with randomized delays for
+//! human-like automation.
 use crate::vision::PixelColor;
 use crate::{controls, vision};
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result};
 use log::debug;
 use serde::Deserialize;
 use std::path::PathBuf;
@@ -58,9 +57,6 @@ pub enum BotEventType {
         /// Path to the image file to search for on the screen.
         image_path: PathBuf,
     },
-    /// Special predefined action sequence.
-    #[serde(rename = "special")]
-    SpecialAction {},
 }
 
 impl BotEvent {
@@ -108,14 +104,6 @@ impl BotEvent {
                     controls::move_mouse(target_pixel)?;
                     controls::left_click()?;
                     sleep_random_delay(&self.delay_rng);
-                }
-                BotEventType::SpecialAction {} => {
-                    debug!("Executing special action '{}'", self.id);
-                    if self.id == "hop_world" {
-                        special_actions::hop_world().context("Failed to hop world")?;
-                    } else {
-                        bail!("Unknown special action '{}'", self.id);
-                    }
                 }
             }
         }

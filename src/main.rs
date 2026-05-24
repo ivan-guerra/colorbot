@@ -16,7 +16,6 @@ use std::{
 
 mod controls;
 mod event;
-mod special_actions;
 mod vision;
 mod windmouse;
 
