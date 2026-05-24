@@ -8,7 +8,6 @@ use anyhow::{bail, ensure, Context, Result};
 use image::ImageReader;
 use image::{GrayImage, ImageBuffer, Rgba};
 use imageproc::template_matching::{find_extremes, MatchTemplateMethod};
-use rand::seq::IndexedRandom;
 use scrap::{Capturer, Display};
 use std::path::Path;
 
@@ -189,14 +188,6 @@ fn get_pixels_with_target_color(target_color: &PixelColor) -> Result<Vec<Point>>
         }
     }
     Ok(matches)
-}
-
-/// Finds and returns a random pixel position matching the target color, if any exist.
-pub fn find_color(target_color: &PixelColor) -> Result<Option<Point>> {
-    let matches = get_pixels_with_target_color(target_color)?;
-    let mut rng = rand::rng();
-
-    Ok(matches.choose(&mut rng).copied())
 }
 
 /// Finds a point inside the shape formed by pixels matching the target color, biased away from edges.

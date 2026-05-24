@@ -1,7 +1,8 @@
 //! Bot event types and execution logic.
 //!
-//! This module defines the core event types (mouse clicks, keypresses, color detection, and special actions)
-//! that can be deserialized from bot scripts and executed with randomized delays for human-like automation.
+//! This module defines the core event types (keypresses, color detection, image template
+//! recognition, and special actions) that can be deserialized from bot scripts and executed with
+//! randomized delays for human-like automation.
 use crate::special_actions;
 use crate::vision::PixelColor;
 use crate::{controls, vision};
@@ -14,45 +15,52 @@ use std::time::Duration;
 
 /// Represents different types of bot events that can be executed.
 #[derive(Debug, Deserialize)]
+pub struct BotEvent {
+    /// Event identifier for logging.
+    pub id: String,
+    /// Number of times to execute this event.
+    #[serde(default = "default_count")]
+    pub count: u32,
+    /// Delay range in milliseconds [min, max] after execution.
+    #[serde(default = "default_delay_rng")]
+    pub delay_rng: [u32; 2],
+    /// The specific event type and its parameters.
+    #[serde(flatten)]
+    pub event_type: BotEventType,
+}
+
+fn default_count() -> u32 {
+    1
+}
+
+fn default_delay_rng() -> [u32; 2] {
+    [0, 0]
+}
+
+/// The specific type of bot event.
+#[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
-pub enum BotEvent {
+pub enum BotEventType {
     /// Keyboard key press event.
     #[serde(rename = "keypress")]
     KeyPress {
-        /// Event identifier for logging.
-        id: String,
         /// Key to press (xdotool format).
         keycode: String,
-        /// Delay range in milliseconds [min, max] after execution.
-        delay_rng: [u32; 2],
-        /// Number of times to press the key.
-        count: u32,
     },
     /// Color-based pixel detection and click event.
     #[serde(rename = "color")]
     Color {
-        /// Event identifier for logging.
-        id: String,
         /// Target RGB color values [r, g, b].
         rgb: [u8; 3],
-        /// Delay range in milliseconds [min, max] after execution.
-        delay_rng: [u32; 2],
     },
     #[serde(rename = "image")]
     Image {
-        /// Event identifier for logging.
-        id: String,
         /// Path to the image file to search for on the screen.
         image_path: PathBuf,
-        /// Delay range in milliseconds [min, max] after execution.
-        delay_rng: [u32; 2],
     },
     /// Special predefined action sequence.
     #[serde(rename = "special")]
-    SpecialAction {
-        /// Action identifier (e.g., "drop_inventory", "canifis_recovery").
-        id: String,
-    },
+    SpecialAction {},
 }
 
 impl BotEvent {
@@ -65,56 +73,49 @@ impl BotEvent {
             std::thread::sleep(Duration::from_millis(delay.into()));
         };
 
-        match &self {
-            BotEvent::KeyPress {
-                id,
-                keycode,
-                delay_rng,
-                count,
-            } => {
-                debug!("Executing keypress '{}': '{}' x{}", id, keycode, count);
+        for i in 0..self.count {
+            if self.count > 1 {
+                debug!("Executing '{}' iteration {}/{}", self.id, i + 1, self.count);
+            }
 
-                for _ in 0..*count {
+            match &self.event_type {
+                BotEventType::KeyPress { keycode } => {
+                    debug!("Executing keypress '{}': '{}'", self.id, keycode);
                     controls::toggle_key(keycode)?;
+                    sleep_random_delay(&self.delay_rng);
                 }
-                sleep_random_delay(delay_rng);
-            }
-            BotEvent::Color { id, rgb, delay_rng } => {
-                debug!(
-                    "Executing color event '{}': target RGB({},{},{})",
-                    id, rgb[0], rgb[1], rgb[2]
-                );
-                let target_color = PixelColor::new(rgb[0], rgb[1], rgb[2]);
-                let target_pixel = vision::find_point_in_shape(&target_color)
-                    .context("Failed to find target pixel color")?;
+                BotEventType::Color { rgb } => {
+                    debug!(
+                        "Executing color event '{}': target RGB({},{},{})",
+                        self.id, rgb[0], rgb[1], rgb[2]
+                    );
+                    let target_color = PixelColor::new(rgb[0], rgb[1], rgb[2]);
+                    let target_pixel = vision::find_point_in_shape(&target_color)
+                        .context("Failed to find target pixel color")?;
 
-                controls::move_mouse(target_pixel)?;
-                controls::left_click()?;
-                sleep_random_delay(delay_rng);
-            }
-            BotEvent::Image {
-                id,
-                image_path,
-                delay_rng,
-            } => {
-                debug!(
-                    "Executing image event '{}': searching for image '{}'",
-                    id,
-                    image_path.display()
-                );
-                let target_pixel = vision::find_image_on_screen(image_path)
-                    .context("Failed to find target image on screen")?;
-                controls::move_mouse(target_pixel)?;
-                controls::left_click()?;
-                sleep_random_delay(delay_rng);
-            }
-            BotEvent::SpecialAction { id } => {
-                debug!("Executing special action '{}'", id);
-                if id == "find_crab" {
-                    special_actions::find_gemstone_crab()
-                        .context("Failed to execute find gemstone crab action")?;
-                } else {
-                    bail!("Unknown special action '{}'", id);
+                    controls::move_mouse(target_pixel)?;
+                    controls::left_click()?;
+                    sleep_random_delay(&self.delay_rng);
+                }
+                BotEventType::Image { image_path } => {
+                    debug!(
+                        "Executing image event '{}': searching for image '{}'",
+                        self.id,
+                        image_path.display()
+                    );
+                    let target_pixel = vision::find_image_on_screen(image_path)
+                        .context("Failed to find target image on screen")?;
+                    controls::move_mouse(target_pixel)?;
+                    controls::left_click()?;
+                    sleep_random_delay(&self.delay_rng);
+                }
+                BotEventType::SpecialAction {} => {
+                    debug!("Executing special action '{}'", self.id);
+                    if self.id == "hop_world" {
+                        special_actions::hop_world().context("Failed to hop world")?;
+                    } else {
+                        bail!("Unknown special action '{}'", self.id);
+                    }
                 }
             }
         }

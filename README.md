@@ -1,91 +1,146 @@
-# colorbot
+# ColorBot
 
-A Old School Runescape colorbot utility.
+A Old School RuneScape bot that uses color detection and image recognition to
+automate in-game actions.
 
-## Requirements
+## Features
 
-`colorbot` only supports Linux. To build and run this utility, your system must
-meet the following requirements:
+- **Color Detection**: Locate and click on specific RGB colors on screen
+- **Image Recognition**: Find and interact with UI elements using template
+  matching
+- **Keyboard Automation**: Simulate keypress events
+- **Special Actions**: Pre-built automation sequences for common tasks
 
-- rustc >= 1.82.0
-- [xdotool][1]
+## Prerequisites
 
-> **Note**: This utility is meant to be used in conjunction with the RuneLite
-> plugins Inventory Tags, NPC Indicators, Object Markers, and Menu Entry
-> Swapper. Checkout this [blog post][2] for more information.
+- Linux operating system
+- X11 display server
+- `xdotool` - for keyboard and mouse control
+- A screen capture tool (e.g., `scrot`) for creating image templates of your own
 
-## Program Usage
-
-`colorbot` is a command line utility. Below is the program usage:
+## Usage
 
 ```bash
-Usage: colorbot [OPTIONS] <SCRIPT>
-
-Arguments:
-  <SCRIPT>  path to bot script
-
-Options:
-  -r, --runtime <RUNTIME>  script runtime in seconds [default: 3600]
-  -g, --debug              enable logging
-  -h, --help               Print help
-  -V, --version            Print version
+colorbot path/to/script.json
 ```
 
-`colorbot` has one required argument which is the path to a JSON file containing
-bot events. The events fall under four categories:
+Run `colorbot --help` for more options.
 
-- **Color Events**: These events trigger the bot to search for an NPC or object
-  with the specified RGB color. If found, the bot will click at a point inside
-  the convex hull formed by matching pixels, biased away from edges for more
-  natural targeting. Additionally, a random delay is inserted in the range
-  specified by `delay_rng` after the click is performed.
-- **Image Events**: These events trigger the bot to search for a template image
-  on the screen using template matching. If found, the bot will click at a
-  random point within the matched region. A random delay is inserted in the
-  range specified by `delay_rng` after the click is performed.
-- **Keypress Events**: These events trigger the bot to press a specified key on
-  the keyboard. You specify keys using [X11 keycodes][3] much like when using
-  the `xdotool`. You can also specify a `count` for how many times to press that
-  key. A random delay is inserted in the range specified by `delay_rng` after
-  the keypress is performed.
-- **Special Events**: These events trigger the bot to perform a special action.
-  For example, the `hop_world` special event will hop to the next world using
-  the world hopping hotkeys. You can add special events to the
-  [`special_actions.rs`](src/special_actions.rs) module and then edit the
-  [`event.rs`](src/event.rs) module to add a trigger for that event type.
+## Script Format
 
-Below is an example of each event type:
+Scripts are defined in JSON format with an array of events. Each event has
+common properties and type-specific parameters.
+
+### Common Event Properties
+
+All events support these properties:
+
+- `type`: The event type (required) - one of: `keypress`, `color`, `image`,
+  `special`
+- `id`: A descriptive identifier for logging purposes (required)
+- `count`: Number of times to execute this event (optional, defaults to 1)
+- `delay_rng`: Random delay range in milliseconds `[min, max]` after execution
+
+### Event Types
+
+#### KeyPress Event
+
+Simulates keyboard input using xdotool key names.
+
+```json
+{
+  "type": "keypress",
+  "id": "press_escape",
+  "count": 1,
+  "keycode": "Escape",
+  "delay_rng": [750, 1000]
+}
+```
+
+`keycode` repesents the key to press (xdotool format, e.g., "a", "Escape",
+"Return", "ctrl+c").
+
+#### Color Detection Event
+
+Finds and clicks on a specific RGB color on screen.
+
+```json
+{
+  "type": "color",
+  "id": "click_blue_button",
+  "count": 1,
+  "rgb": [52, 152, 219],
+  "delay_rng": [500, 750]
+}
+```
+
+`rgb` represents the target RGB color values `[r, g, b]` (0-255). This is best
+used with the outline function of the RuneLite Object Markers or NPC Indicators
+plugins. The bot is smart enough to click within the boundaries of the colored
+outline with randomized offsets to mimic human behavior.
+
+#### Image Recognition Event
+
+Locates and clicks on a UI element using template matching.
+
+```json
+{
+  "type": "image",
+  "id": "click_submit_button",
+  "count": 1,
+  "image_path": "templates/submit_button.png",
+  "delay_rng": [500, 1000]
+}
+```
+
+`image_path` is the path to the template image file (PNG format recommended).
+The bot captures the screen and searches for the template image. If found, it
+clicks within the matched area with randomized offsets.
+
+#### Special Action Event
+
+Executes pre-defined complex action sequences.
+
+```json
+{
+  "type": "special",
+  "id": "find_crab",
+  "count": 1
+}
+```
+
+Currently available special actions:
+
+- `hop_world`: Hops worlds using the World Hopper plugin hot keys.
+
+### Example Script
 
 ```json
 [
   {
+    "type": "keypress",
+    "id": "open_menu",
+    "keycode": "Escape",
+    "delay_rng": [750, 1000]
+  },
+  {
     "type": "color",
-    "id": "event 1",
-    "rgb": [255, 0, 0],
-    "delay_rng": [2000, 2250]
+    "id": "click_settings",
+    "rgb": [52, 152, 219],
+    "delay_rng": [500, 750]
   },
   {
     "type": "image",
-    "id": "event 2",
-    "image_path": "/path/to/template.png",
-    "delay_rng": [1500, 1750]
+    "id": "click_confirm",
+    "image_path": "templates/confirm_button.png",
+    "delay_rng": [1000, 1500]
   },
   {
     "type": "keypress",
-    "id": "event 3",
-    "keycode": "Escape",
-    "delay_rng": [750, 1000],
-    "count": 1
-  },
-  {
-    "type": "special",
-    "id": "drop_inventory"
+    "id": "repeat_action",
+    "count": 5,
+    "keycode": "space",
+    "delay_rng": [200, 300]
   }
 ]
 ```
-
-Checkout the [scripts/](scripts/) directory for example scripts.
-
-[1]: https://www.semicomplete.com/projects/xdotool/
-[2]: https://programmador.com/posts/2025/colorbot/
-[3]: https://www.cl.cam.ac.uk/~mgk25/ucs/keysymdef.h
