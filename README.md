@@ -5,10 +5,15 @@ automate in-game actions.
 
 ## Features
 
-- **Color Detection**: Locate and click on specific RGB colors on screen
-- **Image Recognition**: Find and interact with UI elements using template
-  matching
-- **Keyboard Automation**: Simulate keypress events
+- **Color Detection**: Work in conjunction with RuneLite Object Markers or NPC
+  Indicators plugins to click within the boundaries of colored outlines.
+- **Image Recognition**: Find and interact with in game objects using parallel
+  template matching. You can make your own templates with any screen capture
+  tool.
+- **Human-like Mouse Movement**: WindMouse algorithm for natural cursor paths.
+- **Keyboard Automation**: Simulate any key input supported by X11.
+- **JSON-based Scripting**: Define complex automation sequences with
+  customizable delays and repetitions.
 
 ## Prerequisites
 
