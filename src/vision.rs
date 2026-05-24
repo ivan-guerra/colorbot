@@ -317,9 +317,15 @@ pub fn find_image_on_screen(target_image: &Path) -> Result<Point> {
 
     // Load template image converted to grayscale
     let temp_dynamic = ImageReader::open(target_image)
-        .context("Failed to locate or open 'template.png' asset from disk")?
+        .context(format!(
+            "Failed to locate or open {} asset from disk",
+            target_image.display()
+        ))?
         .decode()
-        .context("Failed to parse and decode target 'template.png' format structure")?;
+        .context(format!(
+            "Failed to parse and decode target {} format structure",
+            target_image.display()
+        ))?;
     let temp = temp_dynamic.to_luma8();
 
     // Run template matching
